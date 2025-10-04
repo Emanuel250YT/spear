@@ -11,9 +11,9 @@ export function SiteHeader() {
     { href: "/", label: "Inicio", icon: Briefcase },
     { href: "/proyectos", label: "Proyectos", icon: Briefcase },
     { href: "/freelancers", label: "Freelancers", icon: Tag },
-    { href: "#pricing", label: "Comisiones", icon: Tag },
-    { href: "faq", label: "FAQ", icon: HelpCircle },
-    { href: "About", label: "Nosotros", icon: Info },
+    { href: "/#pricing", label: "Comisiones", icon: Tag },
+    { href: "/faq", label: "FAQ", icon: HelpCircle },
+    { href: "/About", label: "Nosotros", icon: Info },
   ]
 
   return (
@@ -61,7 +61,7 @@ export function SiteHeader() {
                          hover:bg-blue-300 hover:shadow-md hover:scale-[1.02]
                          transition-all"
             >
-              <Link href="/perfil">Mi Perfil</Link>
+              <Link href="/admin/login">Conectar Wallet</Link>
             </Button>
           </div>
 
