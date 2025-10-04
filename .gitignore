@@ -46,7 +46,6 @@ next-env.d.ts
 /deployments
 /typechain-types
 hardhat.config.js
-hardhat.config.ts
 
 # Hardhat Ignition default folder for deployments against a local node
 ignition/deployments/chain-31337

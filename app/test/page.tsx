@@ -238,7 +238,7 @@ export default function TestPage() {
                   <Alert className="mb-4 border-red-200/20 bg-red-200/10">
                     <AlertCircle className="h-4 w-4" />
                     <AlertDescription className="text-red-200">
-                      Red incorrecta. Necesitas estar en Sepolia Testnet.
+                      Red incorrecta. Necesitas estar en Polkadot Hub TestNet.
                     </AlertDescription>
                   </Alert>
                   <Button
@@ -680,12 +680,12 @@ export default function TestPage() {
                       <div>
                         <p className="text-sm text-gray-400">Dirección del Contrato</p>
                         <p className="text-sm font-mono text-blue-200 break-all">
-                          0xeda2FdE00141C5453fBaf3c6856222A289ba3BE6
+                          0xf90f46345E09Bd8C6c265EdEbFa30269891EC259
                         </p>
                       </div>
                       <div>
                         <p className="text-sm text-gray-400">Red</p>
-                        <p className="text-blue-200">Sepolia Testnet</p>
+                        <p className="text-blue-200">Polkadot Hub TestNet</p>
                       </div>
                       <div>
                         <p className="text-sm text-gray-400">Versión</p>
@@ -737,7 +737,7 @@ export default function TestPage() {
                         Recargar Datos
                       </Button>
                       <Button
-                        onClick={() => window.open('https://sepolia.etherscan.io/address/0xeda2FdE00141C5453fBaf3c6856222A289ba3BE6', '_blank')}
+                        onClick={() => window.open('https://blockscout-passet-hub.parity-testnet.parity.io/address/0xf90f46345E09Bd8C6c265EdEbFa30269891EC259', '_blank')}
                         variant="outline"
                         className="border-blue-200/50 text-blue-200 hover:bg-blue-200/10"
                       >
