@@ -2,22 +2,37 @@
 
 import type React from "react"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import Image from "next/image"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { AlertCircle } from "lucide-react"
+import { WalletButton } from "@/components/ui/wallet-button"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { Separator } from "@/components/ui/separator"
+import { useWeb3 } from "@/hooks/useWeb3"
+import { AlertCircle, Wallet, Key, Shield } from "lucide-react"
 
 export default function AdminLogin() {
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [error, setError] = useState("")
   const [isLoading, setIsLoading] = useState(false)
+  const [loginMethod, setLoginMethod] = useState<'credentials' | 'wallet'>('credentials')
   const router = useRouter()
 
-  const handleLogin = (e: React.FormEvent) => {
+  const { isConnected, account, isCorrectNetwork } = useWeb3()
+
+  // Lista de direcciones autorizadas (en producción esto estaría en un backend)
+  const authorizedAddresses = [
+    "0x1234567890123456789012345678901234567890", // Dirección de ejemplo
+    "0xabcdefabcdefabcdefabcdefabcdefabcdefabcd", // Otra dirección de ejemplo
+    // Agregar direcciones reales aquí
+  ]
+
+  const handleCredentialLogin = (e: React.FormEvent) => {
     e.preventDefault()
     setError("")
     setIsLoading(true)
@@ -26,6 +41,7 @@ export default function AdminLogin() {
     setTimeout(() => {
       // Default credentials
       if (
+        (email === "admin@spear.dev" && password === "admin123") ||
         (email === "admin@theskitbit.com" && password === "1234") ||
         (email === "Addy@theskitbit.com" && password === "1234")
       ) {
@@ -35,11 +51,51 @@ export default function AdminLogin() {
         document.cookie = `admin-session=authenticated; path=/; expires=${expiryDate.toUTCString()}`
         router.push("/admin")
       } else {
-        setError("Invalid email or password")
+        setError("Credenciales inválidas")
       }
       setIsLoading(false)
     }, 1000)
   }
+
+  const handleWalletLogin = () => {
+    if (!isConnected) {
+      setError("Por favor conecta tu wallet primero")
+      return
+    }
+
+    if (!isCorrectNetwork) {
+      setError("Por favor cambia a la red correcta")
+      return
+    }
+
+    if (!account) {
+      setError("No se pudo obtener la dirección de la wallet")
+      return
+    }
+
+    // Verificar si la dirección está autorizada
+    const isAuthorized = authorizedAddresses.includes(account.toLowerCase())
+
+    if (isAuthorized) {
+      // Autenticación exitosa con wallet
+      const expiryDate = new Date()
+      expiryDate.setTime(expiryDate.getTime() + 24 * 60 * 60 * 1000)
+      document.cookie = `admin-session=wallet-${account}; path=/; expires=${expiryDate.toUTCString()}`
+      router.push("/admin")
+    } else {
+      setError("Tu wallet no tiene permisos de administrador")
+    }
+  }
+
+  // Auto-login cuando la wallet se conecta correctamente
+  useEffect(() => {
+    if (loginMethod === 'wallet' && isConnected && isCorrectNetwork && account) {
+      const isAuthorized = authorizedAddresses.includes(account.toLowerCase())
+      if (isAuthorized) {
+        handleWalletLogin()
+      }
+    }
+  }, [isConnected, isCorrectNetwork, account, loginMethod])
 
   return (
     <div className="min-h-screen bg-[#0a0a0a] flex flex-col md:flex-row">
@@ -47,24 +103,34 @@ export default function AdminLogin() {
       <div className="hidden md:flex md:w-1/2 bg-gradient-to-br from-purple-600 to-blue-600 p-12 flex-col justify-between">
         <div>
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-white rounded-lg flex items-center justify-center">
-              <span className="text-black font-bold text-lg">SK</span>
-            </div>
-            <span className="text-2xl font-semibold text-white">Skitbit</span>
+            <Image
+              src="/icons/spear-white.svg"
+              alt="Spear logo"
+              width={40}
+              height={40}
+              className="h-10 w-10"
+            />
+            <span className="text-2xl font-semibold text-white">Spear</span>
           </div>
-          <h1 className="text-4xl font-bold text-white mt-12">Welcome to Skitbit Admin</h1>
+          <h1 className="text-4xl font-bold text-white mt-12">Panel de Administración</h1>
           <p className="text-purple-100 mt-4 max-w-md">
-            Manage your website content, pricing, and settings from one central dashboard.
+            Gestiona contratos inteligentes, proyectos y configuraciones de la plataforma desde un panel centralizado.
           </p>
-        </div>
-        <div className="mt-auto">
-          <Image
-            src="/images/admin-cover.png"
-            alt="Admin Dashboard"
-            width={500}
-            height={300}
-            className="rounded-xl shadow-lg"
-          />
+
+          <div className="mt-8 space-y-4">
+            <div className="flex items-center gap-3 text-purple-100">
+              <Shield className="h-5 w-5" />
+              <span>Autenticación segura con Web3</span>
+            </div>
+            <div className="flex items-center gap-3 text-purple-100">
+              <Wallet className="h-5 w-5" />
+              <span>Conecta tu wallet autorizada</span>
+            </div>
+            <div className="flex items-center gap-3 text-purple-100">
+              <Key className="h-5 w-5" />
+              <span>O usa credenciales tradicionales</span>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -72,78 +138,149 @@ export default function AdminLogin() {
       <div className="flex-1 flex flex-col items-center justify-center p-6 md:p-12">
         {/* Mobile header - only visible on mobile */}
         <div className="flex md:hidden items-center gap-3 mb-8 w-full">
-          <div className="w-10 h-10 bg-white rounded-lg flex items-center justify-center">
-            <span className="text-black font-bold text-lg">SK</span>
-          </div>
-          <span className="text-2xl font-semibold text-white">Skitbit</span>
+          <Image
+            src="/icons/spear-white.svg"
+            alt="Spear logo"
+            width={40}
+            height={40}
+            className="h-10 w-10"
+          />
+          <span className="text-2xl font-semibold text-white">Spear</span>
         </div>
 
         <div className="w-full max-w-md">
           <div className="text-center mb-8">
-            <h2 className="text-2xl font-bold text-white">Sign in to your account</h2>
-            <p className="text-neutral-400 mt-2">Enter your credentials to access the admin panel</p>
+            <h2 className="text-2xl font-bold text-white">Acceso Administrativo</h2>
+            <p className="text-neutral-400 mt-2">Elige tu método de autenticación preferido</p>
           </div>
 
-          <form onSubmit={handleLogin} className="space-y-6">
-            {error && (
-              <div className="bg-red-500/10 border border-red-500/30 text-red-300 px-4 py-3 rounded-lg flex items-center gap-3">
-                <AlertCircle className="h-5 w-5" />
-                <span>{error}</span>
-              </div>
-            )}
+          <Card className="bg-[#1a1a1a] border-neutral-800">
+            <CardHeader className="pb-4">
+              <CardTitle className="text-white">Iniciar Sesión</CardTitle>
+              <CardDescription className="text-neutral-400">
+                Accede al panel de administración
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Tabs value={loginMethod} onValueChange={(value) => {
+                setLoginMethod(value as 'credentials' | 'wallet')
+                setError("")
+              }}>
+                <TabsList className="grid w-full grid-cols-2 bg-[#0a0a0a]">
+                  <TabsTrigger value="credentials" className="data-[state=active]:bg-[#C6FF3A] data-[state=active]:text-black">
+                    <Key className="h-4 w-4 mr-2" />
+                    Credenciales
+                  </TabsTrigger>
+                  <TabsTrigger value="wallet" className="data-[state=active]:bg-[#C6FF3A] data-[state=active]:text-black">
+                    <Wallet className="h-4 w-4 mr-2" />
+                    Wallet
+                  </TabsTrigger>
+                </TabsList>
 
-            <div className="space-y-2">
-              <Label htmlFor="email" className="text-neutral-200">
-                Email
-              </Label>
-              <Input
-                id="email"
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="admin@theskitbit.com"
-                className="bg-[#1a1a1a] border-neutral-800 text-white"
-                required
-              />
-            </div>
+                {error && (
+                  <div className="bg-red-500/10 border border-red-500/30 text-red-300 px-4 py-3 rounded-lg flex items-center gap-3 mt-4">
+                    <AlertCircle className="h-5 w-5" />
+                    <span>{error}</span>
+                  </div>
+                )}
 
-            <div className="space-y-2">
-              <div className="flex items-center justify-between">
-                <Label htmlFor="password" className="text-neutral-200">
-                  Password
-                </Label>
-                <button type="button" className="text-sm text-[#C6FF3A] hover:underline">
-                  Forgot password?
-                </button>
-              </div>
-              <Input
-                id="password"
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder="••••••••"
-                className="bg-[#1a1a1a] border-neutral-800 text-white"
-                required
-              />
-            </div>
+                <TabsContent value="credentials" className="space-y-4 mt-4">
+                  <form onSubmit={handleCredentialLogin} className="space-y-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="email" className="text-neutral-200">
+                        Email
+                      </Label>
+                      <Input
+                        id="email"
+                        type="email"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        placeholder="admin@spear.dev"
+                        className="bg-[#0a0a0a] border-neutral-700 text-white focus:border-[#C6FF3A]"
+                        required
+                      />
+                    </div>
 
-            <Button type="submit" disabled={isLoading} className="w-full bg-[#C6FF3A] text-black hover:bg-[#C6FF3A]/90">
-              {isLoading ? (
-                <>
-                  <div className="w-4 h-4 border-2 border-black border-t-transparent rounded-full animate-spin mr-2"></div>
-                  Signing in...
-                </>
-              ) : (
-                "Sign in"
-              )}
-            </Button>
-          </form>
+                    <div className="space-y-2">
+                      <div className="flex items-center justify-between">
+                        <Label htmlFor="password" className="text-neutral-200">
+                          Contraseña
+                        </Label>
+                        <button type="button" className="text-sm text-[#C6FF3A] hover:underline">
+                          ¿Olvidaste tu contraseña?
+                        </button>
+                      </div>
+                      <Input
+                        id="password"
+                        type="password"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        placeholder="••••••••"
+                        className="bg-[#0a0a0a] border-neutral-700 text-white focus:border-[#C6FF3A]"
+                        required
+                      />
+                    </div>
 
-          <div className="mt-8 text-center">
+                    <Button type="submit" disabled={isLoading} className="w-full bg-[#C6FF3A] text-black hover:bg-[#C6FF3A]/90">
+                      {isLoading ? (
+                        <>
+                          <div className="w-4 h-4 border-2 border-black border-t-transparent rounded-full animate-spin mr-2"></div>
+                          Iniciando sesión...
+                        </>
+                      ) : (
+                        "Iniciar Sesión"
+                      )}
+                    </Button>
+                  </form>
+                </TabsContent>
+
+                <TabsContent value="wallet" className="space-y-4 mt-4">
+                  <div className="text-center space-y-4">
+                    <div className="space-y-2">
+                      <p className="text-neutral-300 text-sm">
+                        Conecta tu wallet autorizada para acceder al panel de administración
+                      </p>
+                      {isConnected && account && (
+                        <div className="p-3 bg-[#0a0a0a] rounded-lg border border-neutral-700">
+                          <p className="text-xs text-neutral-400">Wallet conectada:</p>
+                          <p className="text-sm font-mono text-[#C6FF3A] break-all">{account}</p>
+                        </div>
+                      )}
+                    </div>
+
+                    <WalletButton
+                      variant="default"
+                      size="lg"
+                      className="w-full bg-[#C6FF3A] text-black hover:bg-[#C6FF3A]/90"
+                      showAccount={false}
+                      showNetwork={true}
+                    />
+
+                    {isConnected && isCorrectNetwork && (
+                      <Button
+                        onClick={handleWalletLogin}
+                        className="w-full bg-purple-600 text-white hover:bg-purple-700"
+                      >
+                        <Shield className="h-4 w-4 mr-2" />
+                        Acceder como Administrador
+                      </Button>
+                    )}
+
+                    <div className="text-xs text-neutral-500 space-y-1">
+                      <p>• Solo wallets autorizadas pueden acceder</p>
+                      <p>• Asegúrate de estar en la red correcta</p>
+                    </div>
+                  </div>
+                </TabsContent>
+              </Tabs>
+            </CardContent>
+          </Card>
+
+          <div className="mt-6 text-center">
             <p className="text-neutral-400 text-sm">
-              Need help? Contact{" "}
-              <a href="mailto:support@theskitbit.com" className="text-[#C6FF3A] hover:underline">
-                support@theskitbit.com
+              ¿Necesitas ayuda? Contacta{" "}
+              <a href="mailto:support@spear.dev" className="text-[#C6FF3A] hover:underline">
+                support@spear.dev
               </a>
             </p>
           </div>
