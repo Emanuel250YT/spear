@@ -60,28 +60,39 @@ export function WalletButton({
     )
   }
 
-  // Si no está conectado, mostrar botón de conexión
+  // Si no está conectado, mostrar menú de wallets
   if (!isConnected) {
     return (
-      <Button
-        variant={variant}
-        size={size}
-        className={className}
-        onClick={connectWallet}
-        disabled={loading}
-      >
-        {loading ? (
-          <>
-            <Loader2 className="h-4 w-4 animate-spin" />
-            <span className="ml-2">Conectando...</span>
-          </>
-        ) : (
-          <>
-            <Wallet className="h-4 w-4" />
-            <span className="ml-2">Conectar Wallet</span>
-          </>
-        )}
-      </Button>
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <Button variant={variant} size={size} className={className} disabled={loading}>
+            {loading ? (
+              <>
+                <Loader2 className="h-4 w-4 animate-spin" />
+                <span className="ml-2">Conectando...</span>
+              </>
+            ) : (
+              <>
+                <Wallet className="h-4 w-4" />
+                <span className="ml-2">Conectar Wallet</span>
+                <ChevronDown className="h-4 w-4 ml-2" />
+              </>
+            )}
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="end" className="w-56">
+          <DropdownMenuLabel>Selecciona tu Wallet</DropdownMenuLabel>
+          <DropdownMenuSeparator />
+          <DropdownMenuItem onClick={connectWallet}>
+            <Wallet className="h-4 w-4 mr-2" />
+            SubWallet / Talisman
+          </DropdownMenuItem>
+          <DropdownMenuItem onClick={connectWallet}>
+            <Wallet className="h-4 w-4 mr-2" />
+            MetaMask
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
     )
   }
 

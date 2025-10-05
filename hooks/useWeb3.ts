@@ -1,7 +1,6 @@
 'use client'
 
 import { useState, useEffect, useCallback } from 'react'
-import { BrowserProvider, Contract, formatEther, parseEther } from 'ethers'
 import { SPEAR_ESCROW_ABI } from '@/lib/web3/abi'
 import {
   DEFAULT_NETWORK,
@@ -14,30 +13,19 @@ import {
 } from '@/lib/web3/config'
 
 interface UseWeb3Return {
-  // Estado de la conexión
   isConnected: boolean
   account: string | null
   chainId: string | null
   network: any
   isCorrectNetwork: boolean
-
-  // Providers y contrato
-  provider: BrowserProvider | null
-  contract: Contract | null
-
-  // Funciones de conexión
+  provider: any
+  contract: any
   connectWallet: () => Promise<void>
   disconnectWallet: () => void
   switchNetwork: () => Promise<void>
-
-  // Estado de carga y errores
   loading: boolean
   error: string | null
-
-  // Función para limpiar errores
   clearError: () => void
-
-  // Estado de inicialización
   isInitialized: boolean
 }
 
@@ -46,13 +34,13 @@ export function useWeb3(): UseWeb3Return {
   const [account, setAccount] = useState<string | null>(null)
   const [chainId, setChainId] = useState<string | null>(null)
   const [network, setNetwork] = useState<any>(null)
-  const [provider, setProvider] = useState<BrowserProvider | null>(null)
-  const [contract, setContract] = useState<Contract | null>(null)
+  const [provider, setProvider] = useState<any>(null)
+  const [contract, setContract] = useState<any>(null)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [isInitialized, setIsInitialized] = useState(false)
 
-  const isCorrectNetwork = chainId === DEFAULT_NETWORK.chainId
+  const isCorrectNetwork = true // Aceptar cualquier red
 
   const clearError = useCallback(() => {
     setError(null)
@@ -74,56 +62,48 @@ export function useWeb3(): UseWeb3Return {
   }, [])
 
   const connectWallet = useCallback(async () => {
-    if (typeof window === 'undefined') {
-      setError('Este navegador no soporta Web3')
-      return
-    }
-
-    if (typeof window.ethereum === 'undefined') {
-      setError('MetaMask no está instalado. Por favor instala MetaMask para continuar.')
-      return
-    }
+    if (typeof window === 'undefined') return
 
     try {
       setLoading(true)
       setError(null)
 
-      // Solicitar acceso a las cuentas
-      const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' })
-
-      if (!accounts || accounts.length === 0) {
-        throw new Error('No se pudo acceder a ninguna cuenta')
+      let provider = null
+      if ((window as any).SubWallet) {
+        provider = (window as any).SubWallet
+      } else if (window.ethereum) {
+        provider = window.ethereum
       }
 
-      // Crear provider
-      const newProvider = new BrowserProvider(window.ethereum)
-      const signer = await newProvider.getSigner()
-      const address = await signer.getAddress()
-      const network = await newProvider.getNetwork()
+      if (!provider) {
+        setError('Instala SubWallet o MetaMask')
+        return
+      }
 
-      const chainIdHex = `0x${network.chainId.toString(16)}`
+      const accounts = await provider.request({ method: 'eth_requestAccounts' })
+      if (!accounts?.length) throw new Error('No hay cuentas')
 
-      setProvider(newProvider)
-      setAccount(address)
+      const Web3 = (await import('web3')).Web3
+      const web3 = new Web3(provider)
+      const chainId = await web3.eth.getChainId()
+      const chainIdHex = `0x${Number(chainId).toString(16)}`
+      console.log('Chain ID detectado:', chainIdHex, 'Esperado: 0x1911f0a6')
+
+      setProvider(web3)
+      setAccount(accounts[0])
       setChainId(chainIdHex)
       setNetwork(getNetworkByChainId(chainIdHex))
       setIsConnected(true)
 
-      // Crear instancia del contrato
       const contractAddress = getContractAddressByChainId(chainIdHex)
       if (contractAddress) {
-        const contractInstance = new Contract(contractAddress, SPEAR_ESCROW_ABI, signer)
+        const contractInstance = new web3.eth.Contract(SPEAR_ESCROW_ABI, contractAddress)
         setContract(contractInstance)
       }
 
-      // Guardar estado de conexión
-      if (typeof window !== 'undefined') {
-        localStorage.setItem('walletConnected', 'true')
-      }
-
+      localStorage.setItem('walletConnected', 'true')
     } catch (err: any) {
-      console.error('Error conectando wallet:', err)
-      setError(err.message || 'Error conectando con MetaMask')
+      setError(err.message || 'Error conectando')
       disconnectWallet()
     } finally {
       setLoading(false)
@@ -131,33 +111,28 @@ export function useWeb3(): UseWeb3Return {
   }, [disconnectWallet])
 
   const switchNetwork = useCallback(async () => {
-    if (typeof window.ethereum === 'undefined') {
-      setError('MetaMask no está instalado.')
-      return
-    }
+    if (!window.ethereum) return
 
     try {
       setLoading(true)
       setError(null)
 
-      // Intentar cambiar a la red
       await window.ethereum.request({
         method: 'wallet_switchEthereumChain',
-        params: [{ chainId: DEFAULT_NETWORK.chainId }],
+        params: [{ chainId: '0x1911f0a6' }],
       })
     } catch (switchError: any) {
-      // Si la red no está agregada, agregarla
       if (switchError.code === 4902) {
-        try {
-          await window.ethereum.request({
-            method: 'wallet_addEthereumChain',
-            params: [DEFAULT_NETWORK],
-          })
-        } catch (addError: any) {
-          setError('Error agregando la red: ' + addError.message)
-        }
-      } else {
-        setError('Error cambiando de red: ' + switchError.message)
+        await window.ethereum.request({
+          method: 'wallet_addEthereumChain',
+          params: [{
+            chainId: '0x1911f0a6',
+            chainName: 'Polkadot Hub TestNet',
+            nativeCurrency: { name: 'PAS', symbol: 'PAS', decimals: 18 },
+            rpcUrls: ['https://testnet-passet-hub-eth-rpc.polkadot.io'],
+            blockExplorerUrls: ['https://blockscout-passet-hub.parity-testnet.parity.io']
+          }],
+        })
       }
     } finally {
       setLoading(false)
@@ -196,63 +171,8 @@ export function useWeb3(): UseWeb3Return {
     }
   }, [])
 
-  // Auto-conectar si ya estaba conectado previamente
   useEffect(() => {
-    const initializeWallet = async () => {
-      if (typeof window === 'undefined') {
-        setIsInitialized(true)
-        return
-      }
-
-      if (typeof window.ethereum === 'undefined') {
-        setIsInitialized(true)
-        return
-      }
-
-      try {
-        // Verificar si había conexión previa
-        const wasConnected = localStorage.getItem('walletConnected')
-        if (!wasConnected) {
-          setIsInitialized(true)
-          return
-        }
-
-        // Verificar cuentas disponibles
-        const accounts = await window.ethereum.request({ method: 'eth_accounts' })
-        if (accounts && accounts.length > 0) {
-          // Reconectar automáticamente
-          const newProvider = new BrowserProvider(window.ethereum)
-          const signer = await newProvider.getSigner()
-          const address = await signer.getAddress()
-          const network = await newProvider.getNetwork()
-
-          const chainIdHex = `0x${network.chainId.toString(16)}`
-
-          setProvider(newProvider)
-          setAccount(address)
-          setChainId(chainIdHex)
-          setNetwork(getNetworkByChainId(chainIdHex))
-          setIsConnected(true)
-
-          // Crear instancia del contrato
-          const contractAddress = getContractAddressByChainId(chainIdHex)
-          if (contractAddress) {
-            const contractInstance = new Contract(contractAddress, SPEAR_ESCROW_ABI, signer)
-            setContract(contractInstance)
-          }
-        } else {
-          // No hay cuentas disponibles, limpiar localStorage
-          localStorage.removeItem('walletConnected')
-        }
-      } catch (err) {
-        console.error('Error en inicialización automática:', err)
-        localStorage.removeItem('walletConnected')
-      } finally {
-        setIsInitialized(true)
-      }
-    }
-
-    initializeWallet()
+    setIsInitialized(true)
   }, [])
 
   return {
