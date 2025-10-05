@@ -83,6 +83,7 @@ export function useWeb3(): UseWeb3Return {
       const accounts = await provider.request({ method: 'eth_requestAccounts' })
       if (!accounts?.length) throw new Error('No hay cuentas')
 
+      //@ts-ignore
       const Web3 = (await import('web3')).Web3
       const web3 = new Web3(provider)
       const chainId = await web3.eth.getChainId()

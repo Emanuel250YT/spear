@@ -62,6 +62,7 @@ export function useSpearContract(): UseSpearContractReturn {
       setError(null)
       validateConnection()
 
+      //@ts-ignore
       const web3 = (await import('web3')).Web3
       const w3 = new web3()
       const milestoneAmountsWei = params.milestoneAmounts.map(amount => w3.utils.toWei(amount, 'ether'))
