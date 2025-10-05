@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 
 import { useState, useCallback } from 'react'
 import { useWeb3 } from './useWeb3'
@@ -7,33 +7,28 @@ import {
   type CreateProjectParams,
   ProtectionType,
   ProjectStatus,
-  formatProjectStatus,
-  formatProtectionType
 } from '@/lib/web3/config'
 
 interface UseSpearContractReturn {
-  // Funciones del contrato
   createProject: (params: CreateProjectParams) => Promise<void>
   applyToProject: (projectId: number) => Promise<void>
   approveDeveloper: (projectId: number, developer: string) => Promise<void>
+  confirmProjectStart: (projectId: number) => Promise<void>
   completeMilestone: (projectId: number, milestone: number) => Promise<void>
+  approveMilestone: (projectId: number, milestone: number, isClient: boolean) => Promise<void>
   cancelProject: (projectId: number, reason: string) => Promise<void>
-
-  // Funciones de consulta
   getProjectDetails: (projectId: number) => Promise<ProjectDetails | null>
   getProjectApplicants: (projectId: number) => Promise<string[]>
   getProjectCounter: () => Promise<number>
   getDeveloperActiveProjects: (developer: string) => Promise<number>
   getPlatformBalance: () => Promise<string>
-
-  // Estado
   loading: boolean
   error: string | null
   clearError: () => void
 }
 
 export function useSpearContract(): UseSpearContractReturn {
-  const { contract, account, isConnected, isCorrectNetwork } = useWeb3()
+  const { contract, account, isConnected, isCorrectNetwork, provider } = useWeb3()
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
@@ -46,7 +41,7 @@ export function useSpearContract(): UseSpearContractReturn {
       throw new Error('Wallet no conectado')
     }
     if (!isCorrectNetwork) {
-      throw new Error('Red incorrecta. Cambia a Sepolia Testnet.')
+      throw new Error('Red incorrecta. Cambia a Polkadot Asset Hub TestNet.')
     }
     if (!contract) {
       throw new Error('Contrato no disponible')
@@ -62,19 +57,29 @@ export function useSpearContract(): UseSpearContractReturn {
       setError(null)
       validateConnection()
 
-      //@ts-ignore
-      const web3 = (await import('web3')).Web3
-      const w3 = new web3()
-      const milestoneAmountsWei = params.milestoneAmounts.map(amount => w3.utils.toWei(amount, 'ether'))
-      const riskFundWei = w3.utils.toWei(params.riskFund, 'ether')
-      const totalValue = milestoneAmountsWei.reduce((acc, amount) => BigInt(acc) + BigInt(amount), BigInt(0)) + BigInt(riskFundWei)
+      if (!provider) throw new Error('Provider no disponible')
 
-      await contract!.methods.createProject(
+      const milestoneAmountsWei = params.milestoneAmounts.map(amount =>
+        provider.utils.toWei(amount, 'ether')
+      )
+      const riskFundWei = provider.utils.toWei(params.riskFund, 'ether')
+
+      const totalValue = milestoneAmountsWei.reduce((acc, amount) =>
+        BigInt(acc) + BigInt(amount), BigInt(0)
+      ) + BigInt(riskFundWei)
+
+      const tx = await contract!.methods.createProject(
         params.description,
         milestoneAmountsWei,
-        riskFundWei
-      ).send({ from: account, value: totalValue.toString() })
+        riskFundWei,
+        params.protection
+      ).send({
+        from: account,
+        value: totalValue.toString(),
+        gas: 3000000
+      })
 
+      console.log('Proyecto creado:', tx)
     } catch (err: any) {
       console.error('Error creando proyecto:', err)
       setError(err.message || 'Error creando proyecto')
@@ -82,7 +87,7 @@ export function useSpearContract(): UseSpearContractReturn {
     } finally {
       setLoading(false)
     }
-  }, [contract, account, validateConnection])
+  }, [contract, account, provider, validateConnection])
 
   const applyToProject = useCallback(async (projectId: number) => {
     try {
@@ -90,16 +95,19 @@ export function useSpearContract(): UseSpearContractReturn {
       setError(null)
       validateConnection()
 
-      const tx = await contract!.applyToProject(projectId)
-      await tx.wait()
+      const tx = await contract!.methods.applyToProject(projectId).send({
+        from: account,
+        gas: 300000
+      })
+      console.log('Aplicacion enviada:', tx)
     } catch (err: any) {
       console.error('Error aplicando al proyecto:', err)
-      setError(err.reason || err.message || 'Error aplicando al proyecto')
+      setError(err.message || 'Error aplicando al proyecto')
       throw err
     } finally {
       setLoading(false)
     }
-  }, [contract, validateConnection])
+  }, [contract, account, validateConnection])
 
   const approveDeveloper = useCallback(async (projectId: number, developer: string) => {
     try {
@@ -107,16 +115,39 @@ export function useSpearContract(): UseSpearContractReturn {
       setError(null)
       validateConnection()
 
-      const tx = await contract!.approveDeveloper(projectId, developer)
-      await tx.wait()
+      const tx = await contract!.methods.approveDeveloper(projectId, developer).send({
+        from: account,
+        gas: 500000
+      })
+      console.log('Developer aprobado:', tx)
     } catch (err: any) {
       console.error('Error aprobando developer:', err)
-      setError(err.reason || err.message || 'Error aprobando developer')
+      setError(err.message || 'Error aprobando developer')
       throw err
     } finally {
       setLoading(false)
     }
-  }, [contract, validateConnection])
+  }, [contract, account, validateConnection])
+
+  const confirmProjectStart = useCallback(async (projectId: number) => {
+    try {
+      setLoading(true)
+      setError(null)
+      validateConnection()
+
+      const tx = await contract!.methods.confirmProjectStart(projectId).send({
+        from: account,
+        gas: 300000
+      })
+      console.log('Inicio de proyecto confirmado:', tx)
+    } catch (err: any) {
+      console.error('Error confirmando inicio:', err)
+      setError(err.message || 'Error confirmando inicio del proyecto')
+      throw err
+    } finally {
+      setLoading(false)
+    }
+  }, [contract, account, validateConnection])
 
   const completeMilestone = useCallback(async (projectId: number, milestone: number) => {
     try {
@@ -124,16 +155,39 @@ export function useSpearContract(): UseSpearContractReturn {
       setError(null)
       validateConnection()
 
-      const tx = await contract!.completeMilestone(projectId, milestone)
-      await tx.wait()
+      const tx = await contract!.methods.completeMilestone(projectId, milestone).send({
+        from: account,
+        gas: 500000
+      })
+      console.log('Milestone completado:', tx)
     } catch (err: any) {
       console.error('Error completando milestone:', err)
-      setError(err.reason || err.message || 'Error completando milestone')
+      setError(err.message || 'Error completando milestone')
       throw err
     } finally {
       setLoading(false)
     }
-  }, [contract, validateConnection])
+  }, [contract, account, validateConnection])
+
+  const approveMilestone = useCallback(async (projectId: number, milestone: number, isClient: boolean) => {
+    try {
+      setLoading(true)
+      setError(null)
+      validateConnection()
+
+      const tx = await contract!.methods.approveMilestone(projectId, milestone, isClient).send({
+        from: account,
+        gas: 500000
+      })
+      console.log('Milestone aprobado:', tx)
+    } catch (err: any) {
+      console.error('Error aprobando milestone:', err)
+      setError(err.message || 'Error aprobando milestone')
+      throw err
+    } finally {
+      setLoading(false)
+    }
+  }, [contract, account, validateConnection])
 
   const cancelProject = useCallback(async (projectId: number, reason: string) => {
     try {
@@ -141,35 +195,38 @@ export function useSpearContract(): UseSpearContractReturn {
       setError(null)
       validateConnection()
 
-      const tx = await contract!.cancelProject(projectId, reason)
-      await tx.wait()
+      const tx = await contract!.methods.cancelProject(projectId, reason).send({
+        from: account,
+        gas: 500000
+      })
+      console.log('Proyecto cancelado:', tx)
     } catch (err: any) {
       console.error('Error cancelando proyecto:', err)
-      setError(err.reason || err.message || 'Error cancelando proyecto')
+      setError(err.message || 'Error cancelando proyecto')
       throw err
     } finally {
       setLoading(false)
     }
-  }, [contract, validateConnection])
+  }, [contract, account, validateConnection])
 
   const getProjectDetails = useCallback(async (projectId: number): Promise<ProjectDetails | null> => {
     try {
       if (!contract) return null
 
-      const details = await contract.getProjectDetails(projectId)
+      const project = await contract.methods.projects(projectId).call()
 
       return {
-        client: details[0],
-        developer: details[1],
-        totalAmount: details[2],
-        riskFund: details[3],
-        milestoneAmounts: details[4],
-        milestoneCompleted: details[5],
-        protection: details[6],
-        status: details[7],
-        createdAt: details[8],
-        expiresAt: details[9],
-        description: details[10],
+        client: project.client,
+        developer: project.developer,
+        totalAmount: BigInt(project.totalAmount),
+        riskFund: BigInt(project.riskFund),
+        milestoneAmounts: project.milestoneAmounts.map((amount: any) => BigInt(amount)),
+        milestoneCompleted: project.milestoneCompleted,
+        protection: Number(project.protection) as ProtectionType,
+        status: Number(project.status) as ProjectStatus,
+        createdAt: BigInt(project.createdAt),
+        expiresAt: BigInt(project.expiresAt),
+        description: project.description,
       }
     } catch (err: any) {
       console.error('Error obteniendo detalles del proyecto:', err)
@@ -180,7 +237,8 @@ export function useSpearContract(): UseSpearContractReturn {
   const getProjectApplicants = useCallback(async (projectId: number): Promise<string[]> => {
     try {
       if (!contract) return []
-      return await contract.getProjectApplicants(projectId)
+      const applicants = await contract.methods.getProjectApplicants(projectId).call()
+      return applicants
     } catch (err: any) {
       console.error('Error obteniendo aplicantes:', err)
       return []
@@ -190,7 +248,7 @@ export function useSpearContract(): UseSpearContractReturn {
   const getProjectCounter = useCallback(async (): Promise<number> => {
     try {
       if (!contract) return 0
-      const counter = await contract.projectCounter()
+      const counter = await contract.methods.projectCounter().call()
       return Number(counter)
     } catch (err: any) {
       console.error('Error obteniendo contador de proyectos:', err)
@@ -201,7 +259,7 @@ export function useSpearContract(): UseSpearContractReturn {
   const getDeveloperActiveProjects = useCallback(async (developer: string): Promise<number> => {
     try {
       if (!contract) return 0
-      const count = await contract.developerActiveProjects(developer)
+      const count = await contract.methods.developerActiveProjects(developer).call()
       return Number(count)
     } catch (err: any) {
       console.error('Error obteniendo proyectos activos del developer:', err)
@@ -211,20 +269,22 @@ export function useSpearContract(): UseSpearContractReturn {
 
   const getPlatformBalance = useCallback(async (): Promise<string> => {
     try {
-      if (!contract) return '0'
-      const balance = await contract.platformBalance()
-      return formatEther(balance)
+      if (!contract || !provider) return '0'
+      const balance = await contract.methods.platformBalance().call()
+      return provider.utils.fromWei(balance, 'ether')
     } catch (err: any) {
       console.error('Error obteniendo balance de la plataforma:', err)
       return '0'
     }
-  }, [contract])
+  }, [contract, provider])
 
   return {
     createProject,
     applyToProject,
     approveDeveloper,
+    confirmProjectStart,
     completeMilestone,
+    approveMilestone,
     cancelProject,
     getProjectDetails,
     getProjectApplicants,

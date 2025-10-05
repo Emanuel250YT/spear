@@ -1,6 +1,6 @@
 export const NETWORKS = {
   POLKADOT_HUB: {
-    chainId: '0x1911f0a6',
+    chainId: '0x190f1b46', // 420420422 en decimal
     chainName: 'Polkadot Hub TestNet',
     nativeCurrency: {
       name: 'PAS',
@@ -25,13 +25,15 @@ export enum ProtectionType {
   Premium = 1,
 }
 
-// Estados de proyecto
+// Estados de proyecto (deben coincidir con el contrato SpearEscrowV2)
 export enum ProjectStatus {
-  Open = 0,
-  InProgress = 1,
-  Completed = 2,
-  Cancelled = 3,
-  Expired = 4,
+  Open = 0,        // Proyecto abierto para aplicaciones
+  Pending = 1,     // Developer asignado, esperando confirmación de inicio
+  InProgress = 2,  // Proyecto en progreso (ambas partes confirmaron)
+  Completed = 3,   // Proyecto completado exitosamente
+  Cancelled = 4,   // Proyecto cancelado
+  Expired = 5,     // Proyecto expirado sin asignación
+  Disputed = 6     // En disputa, requiere intervención admin
 }
 
 // Constantes del contrato
@@ -112,6 +114,8 @@ export function formatProjectStatus(status: ProjectStatus): string {
   switch (status) {
     case ProjectStatus.Open:
       return 'Abierto';
+    case ProjectStatus.Pending:
+      return 'Pendiente';
     case ProjectStatus.InProgress:
       return 'En Progreso';
     case ProjectStatus.Completed:
@@ -120,6 +124,8 @@ export function formatProjectStatus(status: ProjectStatus): string {
       return 'Cancelado';
     case ProjectStatus.Expired:
       return 'Expirado';
+    case ProjectStatus.Disputed:
+      return 'En Disputa';
     default:
       return 'Desconocido';
   }

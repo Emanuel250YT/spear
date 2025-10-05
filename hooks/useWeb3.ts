@@ -40,7 +40,8 @@ export function useWeb3(): UseWeb3Return {
   const [error, setError] = useState<string | null>(null)
   const [isInitialized, setIsInitialized] = useState(false)
 
-  const isCorrectNetwork = true // Aceptar cualquier red
+  // Validar si estamos en la red correcta (Polkadot Asset Hub Testnet)
+  const isCorrectNetwork = chainId === DEFAULT_NETWORK.chainId
 
   const clearError = useCallback(() => {
     setError(null)
@@ -88,12 +89,12 @@ export function useWeb3(): UseWeb3Return {
       const web3 = new Web3(provider)
       const chainId = await web3.eth.getChainId()
       const chainIdHex = `0x${Number(chainId).toString(16)}`
-      console.log('Chain ID detectado:', chainIdHex, 'Esperado: 0x1911f0a6')
+      console.log('Chain ID detectado:', chainIdHex, 'Esperado:', DEFAULT_NETWORK.chainId)
 
       setProvider(web3)
       setAccount(accounts[0])
       setChainId(chainIdHex)
-      setNetwork(getNetworkByChainId(chainIdHex))
+      setNetwork(getNetworkByChainId(chainIdHex) || DEFAULT_NETWORK)
       setIsConnected(true)
 
       const contractAddress = getContractAddressByChainId(chainIdHex)
@@ -112,7 +113,10 @@ export function useWeb3(): UseWeb3Return {
   }, [disconnectWallet])
 
   const switchNetwork = useCallback(async () => {
-    if (!window.ethereum) return
+    if (!window.ethereum) {
+      setError('No se detectó ninguna wallet')
+      return
+    }
 
     try {
       setLoading(true)
@@ -120,20 +124,27 @@ export function useWeb3(): UseWeb3Return {
 
       await window.ethereum.request({
         method: 'wallet_switchEthereumChain',
-        params: [{ chainId: '0x1911f0a6' }],
+        params: [{ chainId: DEFAULT_NETWORK.chainId }],
       })
     } catch (switchError: any) {
+      // Error 4902 significa que la red no está configurada en la wallet
       if (switchError.code === 4902) {
-        await window.ethereum.request({
-          method: 'wallet_addEthereumChain',
-          params: [{
-            chainId: '0x1911f0a6',
-            chainName: 'Polkadot Hub TestNet',
-            nativeCurrency: { name: 'PAS', symbol: 'PAS', decimals: 18 },
-            rpcUrls: ['https://testnet-passet-hub-eth-rpc.polkadot.io'],
-            blockExplorerUrls: ['https://blockscout-passet-hub.parity-testnet.parity.io']
-          }],
-        })
+        try {
+          await window.ethereum.request({
+            method: 'wallet_addEthereumChain',
+            params: [{
+              chainId: DEFAULT_NETWORK.chainId,
+              chainName: DEFAULT_NETWORK.chainName,
+              nativeCurrency: DEFAULT_NETWORK.nativeCurrency,
+              rpcUrls: DEFAULT_NETWORK.rpcUrls,
+              blockExplorerUrls: DEFAULT_NETWORK.blockExplorerUrls
+            }],
+          })
+        } catch (addError: any) {
+          setError('Error agregando la red: ' + addError.message)
+        }
+      } else {
+        setError('Error cambiando de red: ' + switchError.message)
       }
     } finally {
       setLoading(false)

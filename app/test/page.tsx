@@ -14,7 +14,6 @@ import { Alert, AlertDescription } from '@/components/ui/alert'
 import { useWeb3 } from '@/hooks/useWeb3'
 import { useSpearContract } from '@/hooks/useSpearContract'
 import { ProtectionType, formatProjectStatus, formatProtectionType, type ProjectDetails } from '@/lib/web3/config'
-import { formatEther } from 'ethers'
 import {
   Wallet,
   AlertCircle,
@@ -39,14 +38,17 @@ export default function TestPage() {
     connectWallet,
     switchNetwork,
     loading: web3Loading,
-    error: web3Error
+    error: web3Error,
+    provider
   } = useWeb3()
 
   const {
     createProject,
     applyToProject,
     approveDeveloper,
+    confirmProjectStart,
     completeMilestone,
+    approveMilestone,
     cancelProject,
     getProjectDetails,
     getProjectApplicants,
@@ -57,6 +59,12 @@ export default function TestPage() {
     error: contractError,
     clearError
   } = useSpearContract()
+
+  // Helper function para convertir Wei a Ether
+  const formatWeiToEther = (wei: bigint): string => {
+    if (!provider) return '0'
+    return provider.utils.fromWei(wei.toString(), 'ether')
+  }
 
   // Estados para formularios
   const [projectForm, setProjectForm] = useState({
@@ -236,9 +244,9 @@ export default function TestPage() {
               ) : !isCorrectNetwork ? (
                 <div className="text-center">
                   <Alert className="mb-4 border-red-200/20 bg-red-200/10">
-                    <AlertCircle className="h-4 w-4" />
+                    <AlertCircle className="h-4 h-4" />
                     <AlertDescription className="text-red-200">
-                      Red incorrecta. Necesitas estar en Polkadot Hub TestNet.
+                      Red incorrecta. Necesitas estar en Polkadot Asset Hub TestNet.
                     </AlertDescription>
                   </Alert>
                   <Button
@@ -247,7 +255,7 @@ export default function TestPage() {
                     className="bg-red-200 hover:bg-red-300 text-black"
                   >
                     <Network className="w-4 h-4 mr-2" />
-                    Cambiar a Sepolia
+                    Cambiar a Polkadot Asset Hub
                   </Button>
                 </div>
               ) : (
@@ -280,7 +288,7 @@ export default function TestPage() {
                       <DollarSign className="w-5 h-5 text-green-400" />
                     </div>
                     <p className="text-sm text-gray-400">Balance Plataforma</p>
-                    <p className="text-blue-200 font-bold">{platformBalance} ETH</p>
+                    <p className="text-blue-200 font-bold">{platformBalance} PAS</p>
                   </div>
                 </div>
               )}
@@ -352,7 +360,7 @@ export default function TestPage() {
 
                       <div>
                         <label className="block text-sm font-medium mb-2 text-gray-300">
-                          Milestones (ETH, separados por comas)
+                          Milestones (PAS, separados por comas)
                         </label>
                         <Input
                           value={projectForm.milestones}
@@ -368,7 +376,7 @@ export default function TestPage() {
 
                       <div>
                         <label className="block text-sm font-medium mb-2 text-gray-300">
-                          Fondo de Riesgo (ETH)
+                          Fondo de Riesgo (PAS)
                         </label>
                         <Input
                           type="number"
@@ -450,6 +458,9 @@ export default function TestPage() {
                   <Card className="bg-white/5 border-white/10">
                     <CardHeader>
                       <CardTitle className="text-white">Aprobar Developer</CardTitle>
+                      <CardDescription className="text-gray-400">
+                        Solo el cliente puede aprobar a un developer
+                      </CardDescription>
                     </CardHeader>
                     <CardContent className="space-y-4">
                       <Input
@@ -464,6 +475,33 @@ export default function TestPage() {
                         className="w-full bg-green-200 hover:bg-green-300 text-black"
                       >
                         Aprobar Developer
+                      </Button>
+                    </CardContent>
+                  </Card>
+
+                  <Card className="bg-white/5 border-white/10">
+                    <CardHeader>
+                      <CardTitle className="text-white">Confirmar Inicio</CardTitle>
+                      <CardDescription className="text-gray-400">
+                        Ambas partes deben confirmar para iniciar el proyecto
+                      </CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                      <Button
+                        onClick={async () => {
+                          if (!projectId) return
+                          try {
+                            await confirmProjectStart(Number(projectId))
+                            await handleLoadProject()
+                            alert('¡Inicio confirmado!')
+                          } catch (error) {
+                            console.error('Error:', error)
+                          }
+                        }}
+                        disabled={!projectId || isLoading}
+                        className="w-full bg-blue-200 hover:bg-blue-300 text-black"
+                      >
+                        Confirmar Inicio del Proyecto
                       </Button>
                     </CardContent>
                   </Card>
@@ -491,7 +529,7 @@ export default function TestPage() {
                         </div>
                         <div>
                           <p className="text-sm text-gray-400">Monto Total</p>
-                          <p className="text-white font-mono">{formatEther(projectDetails.totalAmount)} ETH</p>
+                          <p className="text-white font-mono">{formatWeiToEther(projectDetails.totalAmount)} PAS</p>
                         </div>
                         <div>
                           <p className="text-sm text-gray-400">Cliente</p>
@@ -510,7 +548,7 @@ export default function TestPage() {
                         </div>
                         <div>
                           <p className="text-sm text-gray-400">Fondo de Riesgo</p>
-                          <p className="text-white font-mono">{formatEther(projectDetails.riskFund)} ETH</p>
+                          <p className="text-white font-mono">{formatWeiToEther(projectDetails.riskFund)} PAS</p>
                         </div>
                       </div>
 
@@ -531,7 +569,7 @@ export default function TestPage() {
                             >
                               <span className="text-white">Milestone {index + 1}</span>
                               <div className="flex items-center gap-2">
-                                <span className="text-white font-mono">{formatEther(amount)} ETH</span>
+                                <span className="text-white font-mono">{formatWeiToEther(amount)} PAS</span>
                                 {projectDetails.milestoneCompleted[index] ? (
                                   <CheckCircle className="w-4 h-4 text-green-400" />
                                 ) : (
@@ -596,6 +634,9 @@ export default function TestPage() {
                   <Card className="bg-white/5 border-white/10">
                     <CardHeader>
                       <CardTitle className="text-white">Completar Milestone</CardTitle>
+                      <CardDescription className="text-gray-400">
+                        El developer marca el milestone como completado
+                      </CardDescription>
                     </CardHeader>
                     <CardContent className="space-y-4">
                       <Input
@@ -613,6 +654,58 @@ export default function TestPage() {
                         <CheckCircle className="w-4 h-4 mr-2" />
                         Completar Milestone
                       </Button>
+                    </CardContent>
+                  </Card>
+
+                  <Card className="bg-white/5 border-white/10">
+                    <CardHeader>
+                      <CardTitle className="text-white">Aprobar Milestone</CardTitle>
+                      <CardDescription className="text-gray-400">
+                        Cliente o Developer aprueban el milestone completado
+                      </CardDescription>
+                    </CardHeader>
+                    <CardContent className="space-y-4">
+                      <Input
+                        type="number"
+                        value={milestoneIndex}
+                        onChange={(e) => setMilestoneIndex(e.target.value)}
+                        placeholder="Índice del milestone (0, 1, 2...)"
+                        className="bg-white/5 border-white/10 text-white"
+                      />
+                      <div className="grid grid-cols-2 gap-2">
+                        <Button
+                          onClick={async () => {
+                            if (!projectId || !milestoneIndex) return
+                            try {
+                              await approveMilestone(Number(projectId), Number(milestoneIndex), true)
+                              await handleLoadProject()
+                              alert('¡Milestone aprobado como cliente!')
+                            } catch (error) {
+                              console.error('Error:', error)
+                            }
+                          }}
+                          disabled={!projectId || !milestoneIndex || isLoading}
+                          className="bg-purple-200 hover:bg-purple-300 text-black"
+                        >
+                          Aprobar (Cliente)
+                        </Button>
+                        <Button
+                          onClick={async () => {
+                            if (!projectId || !milestoneIndex) return
+                            try {
+                              await approveMilestone(Number(projectId), Number(milestoneIndex), false)
+                              await handleLoadProject()
+                              alert('¡Milestone aprobado como developer!')
+                            } catch (error) {
+                              console.error('Error:', error)
+                            }
+                          }}
+                          disabled={!projectId || !milestoneIndex || isLoading}
+                          className="bg-cyan-200 hover:bg-cyan-300 text-black"
+                        >
+                          Aprobar (Developer)
+                        </Button>
+                      </div>
                     </CardContent>
                   </Card>
                 </div>
@@ -660,7 +753,7 @@ export default function TestPage() {
                       </div>
                       <div>
                         <p className="text-sm text-gray-400">Balance de la Plataforma</p>
-                        <p className="text-2xl font-bold text-green-400">{platformBalance} ETH</p>
+                        <p className="text-2xl font-bold text-green-400">{platformBalance} PAS</p>
                       </div>
                       <div>
                         <p className="text-sm text-gray-400">Tus Proyectos Activos</p>
@@ -685,11 +778,11 @@ export default function TestPage() {
                       </div>
                       <div>
                         <p className="text-sm text-gray-400">Red</p>
-                        <p className="text-blue-200">Polkadot Hub TestNet</p>
+                        <p className="text-blue-200">Polkadot Asset Hub TestNet</p>
                       </div>
                       <div>
                         <p className="text-sm text-gray-400">Versión</p>
-                        <p className="text-blue-200">1.0.0</p>
+                        <p className="text-blue-200">SpearEscrowV2</p>
                       </div>
                     </CardContent>
                   </Card>
@@ -711,8 +804,12 @@ export default function TestPage() {
                         <p className="text-blue-200">5 proyectos</p>
                       </div>
                       <div>
+                        <p className="text-sm text-gray-400">Comisión Básica</p>
+                        <p className="text-blue-200">0% (Solo gas)</p>
+                      </div>
+                      <div>
                         <p className="text-sm text-gray-400">Comisión Premium</p>
-                        <p className="text-blue-200">1-3%</p>
+                        <p className="text-blue-200">1-3% (según monto)</p>
                       </div>
                       <div>
                         <p className="text-sm text-gray-400">Expiración</p>
@@ -741,7 +838,7 @@ export default function TestPage() {
                         variant="outline"
                         className="border-blue-200/50 text-blue-200 hover:bg-blue-200/10"
                       >
-                        Ver en Etherscan
+                        Ver en Block Explorer
                       </Button>
                     </div>
                   </CardContent>
