@@ -1,6 +1,6 @@
 export const NETWORKS = {
   POLKADOT_HUB: {
-    chainId: '0x190f1b46', // 420420422 en decimal
+    chainId: '0x1911f0a6', // 420420422 en decimal
     chainName: 'Polkadot Hub TestNet',
     nativeCurrency: {
       name: 'PAS',

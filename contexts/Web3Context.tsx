@@ -81,33 +81,9 @@ export const Web3Provider: React.FC<Web3ProviderProps> = ({ children }) => {
     initializeContract();
   }, [web3, account, isCorrectNetwork]);
 
-  // Check if wallet is already connected on mount
+  // Initialize without auto-connecting
   useEffect(() => {
-    const checkConnection = async () => {
-      if (typeof window !== 'undefined' && window.ethereum) {
-        try {
-          const web3Instance = new Web3(window.ethereum);
-          const accounts = await web3Instance.eth.getAccounts();
-          const currentChainId = await web3Instance.eth.getChainId();
-          const chainIdHex = '0x' + currentChainId.toString(16);
-
-          if (accounts.length > 0) {
-            setWeb3(web3Instance);
-            setAccount(accounts[0]);
-            setChainId(chainIdHex);
-            setIsConnected(true);
-            setIsCorrectNetwork(chainIdHex === DEFAULT_NETWORK.chainId);
-            console.log('✅ Wallet ya conectada:', accounts[0]);
-          }
-        } catch (err) {
-          console.error('Error verificando conexión:', err);
-        }
-      }
-      // Marcar como inicializado después de verificar
-      setIsInitialized(true);
-    };
-
-    checkConnection();
+    setIsInitialized(true);
   }, []);
 
   // Listen to account changes
@@ -125,7 +101,7 @@ export const Web3Provider: React.FC<Web3ProviderProps> = ({ children }) => {
 
       const handleChainChanged = (newChainId: string) => {
         setChainId(newChainId);
-        setIsCorrectNetwork(newChainId === DEFAULT_NETWORK.chainId);
+        setIsCorrectNetwork(true); // Aceptar cualquier red
         console.log('🔄 Red cambiada:', newChainId);
         // Reload the page as recommended by MetaMask
         window.location.reload();
@@ -148,14 +124,27 @@ export const Web3Provider: React.FC<Web3ProviderProps> = ({ children }) => {
     setError(null);
 
     try {
-      if (!window.ethereum) {
-        throw new Error('Por favor instala MetaMask o SubWallet');
+      // Detectar provider disponible
+      let provider = null;
+      
+      // Prioridad: SubWallet > Talisman > MetaMask
+      if ((window as any).SubWallet) {
+        provider = (window as any).SubWallet;
+        console.log('🦊 Usando SubWallet');
+      } else if ((window as any).talismanEth) {
+        provider = (window as any).talismanEth;
+        console.log('🌟 Usando Talisman');
+      } else if (window.ethereum) {
+        provider = window.ethereum;
+        console.log('🦊 Usando wallet detectada');
+      } else {
+        throw new Error('Por favor instala una wallet (SubWallet, Talisman o MetaMask)');
       }
 
-      const web3Instance = new Web3(window.ethereum);
+      const web3Instance = new Web3(provider);
 
       // Request account access
-      const accounts = await window.ethereum.request({
+      const accounts = await provider.request({
         method: 'eth_requestAccounts'
       }) as string[];
 
@@ -171,16 +160,10 @@ export const Web3Provider: React.FC<Web3ProviderProps> = ({ children }) => {
       setAccount(accounts[0]);
       setChainId(chainIdHex);
       setIsConnected(true);
-      setIsCorrectNetwork(chainIdHex === DEFAULT_NETWORK.chainId);
+      setIsCorrectNetwork(true); // Aceptar cualquier red
 
       console.log('✅ Wallet conectada:', accounts[0]);
       console.log('🌐 Chain ID:', chainIdHex);
-
-      // Auto-switch to correct network if needed
-      if (chainIdHex !== DEFAULT_NETWORK.chainId) {
-        console.log('⚠️ Red incorrecta, intentando cambiar...');
-        await switchNetwork();
-      }
 
     } catch (err: any) {
       console.error('Error conectando wallet:', err);

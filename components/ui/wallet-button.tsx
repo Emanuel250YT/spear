@@ -85,12 +85,11 @@ export function WalletButton({
           <DropdownMenuSeparator />
           <DropdownMenuItem onClick={connectWallet}>
             <Wallet className="h-4 w-4 mr-2" />
-            SubWallet / Talisman
+            Conectar Wallet
           </DropdownMenuItem>
-          <DropdownMenuItem onClick={connectWallet}>
-            <Wallet className="h-4 w-4 mr-2" />
-            MetaMask
-          </DropdownMenuItem>
+          <div className="px-2 py-1.5 text-xs text-muted-foreground">
+            Soporta: SubWallet, Talisman, MetaMask
+          </div>
         </DropdownMenuContent>
       </DropdownMenu>
     )
@@ -161,11 +160,11 @@ export function WalletButton({
           <DropdownMenuItem className="flex flex-col items-start space-y-1">
             <span className="text-sm font-medium">Red:</span>
             <div className="flex items-center space-x-2">
-              <Badge variant={isCorrectNetwork ? "default" : "destructive"}>
-                {network.name || 'Desconocida'}
+              <Badge variant="default">
+                {network === '0x1911f0a6' ? 'Polkadot Hub TestNet' : 'Red Conectada'}
               </Badge>
               <span className="text-xs text-muted-foreground">
-                {network.chainId}
+                {network}
               </span>
             </div>
           </DropdownMenuItem>
