@@ -306,8 +306,9 @@ export default function AdminDashboard() {
     const checkAuth = () => {
       const cookies = document.cookie.split(";")
       const sessionCookie = cookies.find((cookie) => cookie.trim().startsWith("admin-session="))
+      const sessionAuth = sessionStorage.getItem('admin-auth')
 
-      if (sessionCookie && sessionCookie.includes("authenticated")) {
+      if ((sessionCookie && (sessionCookie.includes("authenticated") || sessionCookie.includes("wallet-"))) || sessionAuth === 'true') {
         setIsAuthenticated(true)
         // Load saved content from localStorage
         const savedContent = localStorage.getItem("skitbit-content")
@@ -339,7 +340,13 @@ export default function AdminDashboard() {
 
   const handleLogout = () => {
     document.cookie = "admin-session=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT"
+<<<<<<< HEAD
     router.push("/login")
+=======
+    sessionStorage.removeItem('admin-auth')
+    sessionStorage.removeItem('admin-wallet')
+    router.push("/admin/login")
+>>>>>>> 3b1e2548eab40d6e7a485b6e242d62b8781aba37
   }
 
   const handleContentChange = (section: keyof ContentData, field: string, value: string | string[]) => {

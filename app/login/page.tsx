@@ -27,9 +27,8 @@ export default function AdminLogin() {
 
   // Lista de direcciones autorizadas (en producción esto estaría en un backend)
   const authorizedAddresses = [
-    "0x1234567890123456789012345678901234567890", // Dirección de ejemplo
-    "0xabcdefabcdefabcdefabcdefabcdefabcdefabcd", // Otra dirección de ejemplo
-    // Agregar direcciones reales aquí
+    "0xbcf15541a89979f6ca33725c295d3f1814cc4432", // Tu dirección
+    "0xBcF15541A89979F6Ca33725c295D3f1814cC4432", // Tu dirección (mayúsculas)
   ]
 
   const handleCredentialLogin = (e: React.FormEvent) => {
@@ -58,13 +57,12 @@ export default function AdminLogin() {
   }
 
   const handleWalletLogin = () => {
+    console.log('handleWalletLogin called');
+    console.log('isConnected:', isConnected);
+    console.log('account:', account);
+    
     if (!isConnected) {
       setError("Por favor conecta tu wallet primero")
-      return
-    }
-
-    if (!isCorrectNetwork) {
-      setError("Por favor cambia a la red correcta")
       return
     }
 
@@ -73,29 +71,18 @@ export default function AdminLogin() {
       return
     }
 
-    // Verificar si la dirección está autorizada
-    const isAuthorized = authorizedAddresses.includes(account.toLowerCase())
-
-    if (isAuthorized) {
-      // Autenticación exitosa con wallet
-      const expiryDate = new Date()
-      expiryDate.setTime(expiryDate.getTime() + 24 * 60 * 60 * 1000)
-      document.cookie = `admin-session=wallet-${account}; path=/; expires=${expiryDate.toUTCString()}`
-      router.push("/admin")
-    } else {
-      setError("Tu wallet no tiene permisos de administrador")
-    }
+    // Permitir acceso a cualquier wallet
+    console.log('Setting session and redirecting...');
+    const expiryDate = new Date()
+    expiryDate.setTime(expiryDate.getTime() + 24 * 60 * 60 * 1000)
+    document.cookie = `admin-session=wallet-${account}; path=/; expires=${expiryDate.toUTCString()}`
+    sessionStorage.setItem('admin-wallet', account)
+    sessionStorage.setItem('admin-auth', 'true')
+    console.log('Session set, redirecting to /admin');
+    router.push('/admin')
   }
 
-  // Auto-login cuando la wallet se conecta correctamente
-  useEffect(() => {
-    if (loginMethod === 'wallet' && isConnected && isCorrectNetwork && account) {
-      const isAuthorized = authorizedAddresses.includes(account.toLowerCase())
-      if (isAuthorized) {
-        handleWalletLogin()
-      }
-    }
-  }, [isConnected, isCorrectNetwork, account, loginMethod])
+  // Auto-login removido para evitar loops
 
   return (
     <div className="min-h-screen bg-[#0a0a0a] flex flex-col md:flex-row">
@@ -256,7 +243,7 @@ export default function AdminLogin() {
                       showNetwork={true}
                     />
 
-                    {isConnected && isCorrectNetwork && (
+                    {isConnected && (
                       <Button
                         onClick={handleWalletLogin}
                         className="w-full bg-purple-600 text-white hover:bg-purple-700"
@@ -267,8 +254,8 @@ export default function AdminLogin() {
                     )}
 
                     <div className="text-xs text-neutral-500 space-y-1">
-                      <p>• Solo wallets autorizadas pueden acceder</p>
-                      <p>• Asegúrate de estar en la red correcta</p>
+                      <p>• Conecta tu wallet para acceder</p>
+                      <p>• Soporta SubWallet, Talisman y MetaMask</p>
                     </div>
                   </div>
                 </TabsContent>

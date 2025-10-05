@@ -1,0 +1,9 @@
+@echo off
+echo Pulling latest changes from GitHub...
+git pull origin main
+echo.
+echo Installing dependencies...
+call npm install
+echo.
+echo Starting Spear Final on localhost:3000...
+call npm run dev
