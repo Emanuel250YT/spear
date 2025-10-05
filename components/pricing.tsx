@@ -153,7 +153,6 @@ function CommissionCalculator() {
           </div>
         </div>        <div className="grid grid-cols-3 gap-2 text-xs">
           {[50, 75, 100, 500, 1000, 2000, 5000, 7500, 10000, 12500, 15000, 25000].map((presetAmount) => {
-            const result = calculateCommission(presetAmount)
             return (
               <Button
                 key={presetAmount}
@@ -161,8 +160,9 @@ function CommissionCalculator() {
                 size="sm"
                 onClick={() => setAmount(presetAmount)}
                 className="border-blue-200/30 text-blue-200 hover:bg-blue-200/10"
+                suppressHydrationWarning
               >
-                ${presetAmount.toLocaleString()}
+                ${presetAmount}
               </Button>
             )
           })}

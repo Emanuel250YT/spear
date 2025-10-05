@@ -1,48 +1,23 @@
 export const NETWORKS = {
-  SEPOLIA: {
-    chainId: '0xaa36a7',
-    chainName: 'Sepolia Testnet',
+  POLKADOT_HUB: {
+    chainId: '0x1911f0a6',
+    chainName: 'Polkadot Hub TestNet',
     nativeCurrency: {
-      name: 'ETH',
-      symbol: 'ETH',
+      name: 'PAS',
+      symbol: 'PAS',
       decimals: 18,
     },
-    rpcUrls: ['https://sepolia.infura.io/v3/'],
-    blockExplorerUrls: ['https://sepolia.etherscan.io/'],
-  },
-  MAINNET: {
-    chainId: '0x1',
-    chainName: 'Ethereum Mainnet',
-    nativeCurrency: {
-      name: 'ETH',
-      symbol: 'ETH',
-      decimals: 18,
-    },
-    rpcUrls: ['https://mainnet.infura.io/v3/'],
-    blockExplorerUrls: ['https://etherscan.io/'],
-  },
-  LOCALHOST: {
-    chainId: '0x7a69',
-    chainName: 'Localhost 8545',
-    nativeCurrency: {
-      name: 'ETH',
-      symbol: 'ETH',
-      decimals: 18,
-    },
-    rpcUrls: ['http://localhost:8545'],
-    blockExplorerUrls: [],
-  },
+    rpcUrls: ['https://testnet-passet-hub-eth-rpc.polkadot.io'],
+    blockExplorerUrls: ['https://blockscout-passet-hub.parity-testnet.parity.io']
+  }
 } as const;
 
 export const CONTRACT_ADDRESSES = {
-  SEPOLIA: '0xeda2FdE00141C5453fBaf3c6856222A289ba3BE6',
-  MAINNET: '', // Por determinar cuando se despliegue
-  LOCALHOST: '', // Por determinar para desarrollo local
+  POLKADOT_HUB: '0xf90f46345E09Bd8C6c265EdEbFa30269891EC259'
 } as const;
 
-// Configuración por defecto
-export const DEFAULT_NETWORK = NETWORKS.SEPOLIA;
-export const DEFAULT_CONTRACT_ADDRESS = CONTRACT_ADDRESSES.SEPOLIA;
+export const DEFAULT_NETWORK = NETWORKS.POLKADOT_HUB;
+export const DEFAULT_CONTRACT_ADDRESS = CONTRACT_ADDRESSES.POLKADOT_HUB;
 
 // Tipos de protección
 export enum ProtectionType {
@@ -130,16 +105,7 @@ export function getNetworkByChainId(chainId: string) {
 }
 
 export function getContractAddressByChainId(chainId: string): string {
-  switch (chainId) {
-    case NETWORKS.SEPOLIA.chainId:
-      return CONTRACT_ADDRESSES.SEPOLIA;
-    case NETWORKS.MAINNET.chainId:
-      return CONTRACT_ADDRESSES.MAINNET;
-    case NETWORKS.LOCALHOST.chainId:
-      return CONTRACT_ADDRESSES.LOCALHOST;
-    default:
-      return CONTRACT_ADDRESSES.SEPOLIA; // Fallback a Sepolia
-  }
+  return CONTRACT_ADDRESSES.POLKADOT_HUB;
 }
 
 export function formatProjectStatus(status: ProjectStatus): string {

@@ -1,7 +1,6 @@
 'use client'
 
 import { useState, useCallback } from 'react'
-import { Contract, parseEther, formatEther } from 'ethers'
 import { useWeb3 } from './useWeb3'
 import {
   type ProjectDetails,
@@ -63,27 +62,26 @@ export function useSpearContract(): UseSpearContractReturn {
       setError(null)
       validateConnection()
 
-      const milestoneAmountsWei = params.milestoneAmounts.map(amount => parseEther(amount))
-      const riskFundWei = parseEther(params.riskFund)
-      const totalValue = milestoneAmountsWei.reduce((acc, amount) => acc + amount, BigInt(0)) + riskFundWei
+      const web3 = (await import('web3')).Web3
+      const w3 = new web3()
+      const milestoneAmountsWei = params.milestoneAmounts.map(amount => w3.utils.toWei(amount, 'ether'))
+      const riskFundWei = w3.utils.toWei(params.riskFund, 'ether')
+      const totalValue = milestoneAmountsWei.reduce((acc, amount) => BigInt(acc) + BigInt(amount), BigInt(0)) + BigInt(riskFundWei)
 
-      const tx = await contract!.createProject(
+      await contract!.methods.createProject(
         params.description,
         milestoneAmountsWei,
-        riskFundWei,
-        params.protection,
-        { value: totalValue }
-      )
+        riskFundWei
+      ).send({ from: account, value: totalValue.toString() })
 
-      await tx.wait()
     } catch (err: any) {
       console.error('Error creando proyecto:', err)
-      setError(err.reason || err.message || 'Error creando proyecto')
+      setError(err.message || 'Error creando proyecto')
       throw err
     } finally {
       setLoading(false)
     }
-  }, [contract, validateConnection])
+  }, [contract, account, validateConnection])
 
   const applyToProject = useCallback(async (projectId: number) => {
     try {

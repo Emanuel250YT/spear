@@ -358,10 +358,12 @@ export default function ProjectsPage() {
                             <Users className="w-4 h-4 inline mr-1" />
                             {project.proposalsCount} propuestas
                           </div>
-                          <Button className="bg-blue-200 hover:bg-blue-300 text-black">
-                            Ver Proyecto
-                            <ChevronRight className="w-4 h-4 ml-2" />
-                          </Button>
+                          <Link href="/test">
+                            <Button className="bg-blue-200 hover:bg-blue-300 text-black">
+                              Ver Proyecto
+                              <ChevronRight className="w-4 h-4 ml-2" />
+                            </Button>
+                          </Link>
                         </div>
                       </div>
                     </div>
