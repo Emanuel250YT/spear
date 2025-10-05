@@ -1,4 +1,4 @@
-﻿'use client'
+'use client'
 
 import { useState, useCallback } from 'react'
 import { useWeb3 } from './useWeb3'
@@ -74,9 +74,9 @@ export function useSpearContract(): UseSpearContractReturn {
         riskFundWei,
         params.protection
       ).send({
-        from: account,
+        from: account!,
         value: totalValue.toString(),
-        gas: 3000000
+        gas: '3000000'
       })
 
       console.log('Proyecto creado:', tx)
@@ -96,8 +96,8 @@ export function useSpearContract(): UseSpearContractReturn {
       validateConnection()
 
       const tx = await contract!.methods.applyToProject(projectId).send({
-        from: account,
-        gas: 300000
+        from: account!,
+        gas: '300000'
       })
       console.log('Aplicacion enviada:', tx)
     } catch (err: any) {
@@ -116,8 +116,8 @@ export function useSpearContract(): UseSpearContractReturn {
       validateConnection()
 
       const tx = await contract!.methods.approveDeveloper(projectId, developer).send({
-        from: account,
-        gas: 500000
+        from: account!,
+        gas: '500000'
       })
       console.log('Developer aprobado:', tx)
     } catch (err: any) {
@@ -136,8 +136,8 @@ export function useSpearContract(): UseSpearContractReturn {
       validateConnection()
 
       const tx = await contract!.methods.confirmProjectStart(projectId).send({
-        from: account,
-        gas: 300000
+        from: account!,
+        gas: '300000'
       })
       console.log('Inicio de proyecto confirmado:', tx)
     } catch (err: any) {
@@ -156,8 +156,8 @@ export function useSpearContract(): UseSpearContractReturn {
       validateConnection()
 
       const tx = await contract!.methods.completeMilestone(projectId, milestone).send({
-        from: account,
-        gas: 500000
+        from: account!,
+        gas: '500000'
       })
       console.log('Milestone completado:', tx)
     } catch (err: any) {
@@ -176,8 +176,8 @@ export function useSpearContract(): UseSpearContractReturn {
       validateConnection()
 
       const tx = await contract!.methods.approveMilestone(projectId, milestone, isClient).send({
-        from: account,
-        gas: 500000
+        from: account!,
+        gas: '500000'
       })
       console.log('Milestone aprobado:', tx)
     } catch (err: any) {
@@ -196,8 +196,8 @@ export function useSpearContract(): UseSpearContractReturn {
       validateConnection()
 
       const tx = await contract!.methods.cancelProject(projectId, reason).send({
-        from: account,
-        gas: 500000
+        from: account!,
+        gas: '500000'
       })
       console.log('Proyecto cancelado:', tx)
     } catch (err: any) {
@@ -213,7 +213,7 @@ export function useSpearContract(): UseSpearContractReturn {
     try {
       if (!contract) return null
 
-      const project = await contract.methods.projects(projectId).call()
+      const project: any = await contract.methods.projects(projectId).call()
 
       return {
         client: project.client,

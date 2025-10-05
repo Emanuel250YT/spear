@@ -13,7 +13,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { useWeb3 } from '@/hooks/useWeb3'
 import { useSpearContract } from '@/hooks/useSpearContract'
-import { ProtectionType, formatProjectStatus, formatProtectionType, type ProjectDetails } from '@/lib/web3/config'
+import { ProtectionType, formatProjectStatus, formatProtectionType, type ProjectDetails, DEFAULT_NETWORK } from '@/lib/web3/config'
 import {
   Wallet,
   AlertCircle,
@@ -33,7 +33,6 @@ export default function TestPage() {
     isConnected,
     account,
     chainId,
-    network,
     isCorrectNetwork,
     connectWallet,
     switchNetwork,
@@ -274,7 +273,7 @@ export default function TestPage() {
                       <Network className="w-5 h-5 text-blue-400" />
                     </div>
                     <p className="text-sm text-gray-400">Red</p>
-                    <p className="text-blue-200">{network?.chainName || 'Desconocida'}</p>
+                    <p className="text-blue-200">{DEFAULT_NETWORK.chainName || 'Desconocida'}</p>
                   </div>
                   <div className="text-center">
                     <div className="flex items-center justify-center mb-2">

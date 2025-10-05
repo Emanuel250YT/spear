@@ -4,6 +4,7 @@ import type { Metadata } from "next"
 import { Inter } from "next/font/google"
 import Script from "next/script"
 import Plasma from "@/components/plasma"
+import { Web3Provider } from "@/contexts/Web3Context"
 
 const inter = Inter({ subsets: ["latin"], display: "swap" })
 
@@ -98,7 +99,9 @@ export default function RootLayout({
             mouseInteractive={true}
           />
         </div>
-        <div className="relative z-10">{children}</div>
+        <Web3Provider>
+          <div className="relative z-10">{children}</div>
+        </Web3Provider>
       </body>
     </html>
   )
