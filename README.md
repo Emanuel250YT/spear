@@ -58,9 +58,11 @@ npm run dev
 - **Explorer**: https://blockscout-passet-hub.parity-testnet.parity.io
 - **Faucet**: https://faucet.polkadot.io/?parachain=1111
 
-### Contrato Desplegado
-- **Storage Contract**: `0xf90f46345E09Bd8C6c265EdEbFa30269891EC259`
-- **Verificar**: [Ver en Explorer](https://blockscout-passet-hub.parity-testnet.parity.io/address/0xf90f46345E09Bd8C6c265EdEbFa30269891EC259)
+### Contratos Desplegados
+- **Storage Contract (Spear)**: `0xf90f46345E09Bd8C6c265EdEbFa30269891EC259`
+  - [Ver en Explorer](https://blockscout-passet-hub.parity-testnet.parity.io/address/0xf90f46345E09Bd8C6c265EdEbFa30269891EC259)
+- **Storage Contract (Tralala)**: `0x5Fcc96e3f54Fa0775b870257Eeb43cD9eFA73f19`
+  - [Ver en Explorer](https://blockscout-passet-hub.parity-testnet.parity.io/address/0x5Fcc96e3f54Fa0775b870257Eeb43cD9eFA73f19)
 
 ## 🎯 Uso
 
