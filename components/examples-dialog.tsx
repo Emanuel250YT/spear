@@ -3,7 +3,7 @@
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog"
 import YouTubeGrid from "./youtube-grid"
 
-const ACCENT = "#C6FF3A"
+const ACCENT = "#bfdbfe"
 
 type ExamplesDialogProps = {
   open: boolean

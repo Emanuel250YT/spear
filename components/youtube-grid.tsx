@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react"
 import { Play, Pause } from "lucide-react"
 
-const ACCENT = "#C6FF3A"
+const ACCENT = "#bfdbfe"
 
 type YouTubeGridProps = {
   videoIds: string[]

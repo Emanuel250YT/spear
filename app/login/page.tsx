@@ -167,11 +167,11 @@ export default function AdminLogin() {
                 setError("")
               }}>
                 <TabsList className="grid w-full grid-cols-2 bg-[#0a0a0a]">
-                  <TabsTrigger value="credentials" className="data-[state=active]:bg-[#C6FF3A] data-[state=active]:text-black">
+                  <TabsTrigger value="credentials" className="data-[state=active]:bg-blue-200 data-[state=active]:text-black">
                     <Key className="h-4 w-4 mr-2" />
                     Credenciales
                   </TabsTrigger>
-                  <TabsTrigger value="wallet" className="data-[state=active]:bg-[#C6FF3A] data-[state=active]:text-black">
+                  <TabsTrigger value="wallet" className="data-[state=active]:bg-blue-200 data-[state=active]:text-black">
                     <Wallet className="h-4 w-4 mr-2" />
                     Wallet
                   </TabsTrigger>
@@ -196,7 +196,7 @@ export default function AdminLogin() {
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
                         placeholder="admin@spear.dev"
-                        className="bg-[#0a0a0a] border-neutral-700 text-white focus:border-[#C6FF3A]"
+                        className="bg-[#0a0a0a] border-neutral-700 text-white focus:border-blue-200"
                         required
                       />
                     </div>
@@ -206,7 +206,7 @@ export default function AdminLogin() {
                         <Label htmlFor="password" className="text-neutral-200">
                           Contraseña
                         </Label>
-                        <button type="button" className="text-sm text-[#C6FF3A] hover:underline">
+                        <button type="button" className="text-sm text-blue-200 hover:underline">
                           ¿Olvidaste tu contraseña?
                         </button>
                       </div>
@@ -216,12 +216,12 @@ export default function AdminLogin() {
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
                         placeholder="••••••••"
-                        className="bg-[#0a0a0a] border-neutral-700 text-white focus:border-[#C6FF3A]"
+                        className="bg-[#0a0a0a] border-neutral-700 text-white focus:border-blue-200"
                         required
                       />
                     </div>
 
-                    <Button type="submit" disabled={isLoading} className="w-full bg-[#C6FF3A] text-black hover:bg-[#C6FF3A]/90">
+                    <Button type="submit" disabled={isLoading} className="w-full bg-blue-200 text-black hover:bg-blue-300">
                       {isLoading ? (
                         <>
                           <div className="w-4 h-4 border-2 border-black border-t-transparent rounded-full animate-spin mr-2"></div>
@@ -243,7 +243,7 @@ export default function AdminLogin() {
                       {isConnected && account && (
                         <div className="p-3 bg-[#0a0a0a] rounded-lg border border-neutral-700">
                           <p className="text-xs text-neutral-400">Wallet conectada:</p>
-                          <p className="text-sm font-mono text-[#C6FF3A] break-all">{account}</p>
+                          <p className="text-sm font-mono text-blue-200 break-all">{account}</p>
                         </div>
                       )}
                     </div>
@@ -251,7 +251,7 @@ export default function AdminLogin() {
                     <WalletButton
                       variant="default"
                       size="lg"
-                      className="w-full bg-[#C6FF3A] text-black hover:bg-[#C6FF3A]/90"
+                      className="w-full bg-blue-200 text-black hover:bg-blue-300"
                       showAccount={false}
                       showNetwork={true}
                     />
@@ -279,7 +279,7 @@ export default function AdminLogin() {
           <div className="mt-6 text-center">
             <p className="text-neutral-400 text-sm">
               ¿Necesitas ayuda? Contacta{" "}
-              <a href="mailto:support@spear.dev" className="text-[#C6FF3A] hover:underline">
+              <a href="mailto:support@spear.dev" className="text-blue-200 hover:underline">
                 support@spear.dev
               </a>
             </p>

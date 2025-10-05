@@ -1,10 +1,10 @@
 import { SiteHeader } from "@/components/site-header"
 import { AppverseFooter } from "@/components/appverse-footer"
-import { 
-  Accordion, 
-  AccordionContent, 
-  AccordionItem, 
-  AccordionTrigger 
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger
 } from "@/components/ui/accordion"
 
 export default function FAQPage() {
@@ -23,7 +23,7 @@ export default function FAQPage() {
     },
     {
       question: "¿Puedo trabajar con criptomonedas?",
-      answer: "Sí, Spear acepta tanto criptomonedas como monedas fiat. Puedes recibir pagos en ETH, USDC, y otras criptomonedas populares, o convertir automáticamente a tu moneda local."
+      answer: "Sí, Spear acepta pagos en PAS en la red Polkadot Asset Hub. Los contratos inteligentes aseguran transacciones transparentes y automáticas."
     },
     {
       question: "¿Qué tipos de servicios puedo ofrecer?",
@@ -54,18 +54,18 @@ export default function FAQPage() {
   return (
     <div className="min-h-screen bg-black">
       <SiteHeader />
-      
+
       <main className="pt-20">
         {/* Hero Section */}
         <section className="relative py-20 lg:py-32">
           <div className="absolute inset-0 bg-gradient-to-br from-blue-900/20 via-purple-900/20 to-indigo-900/20" />
-          
+
           <div className="relative max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
             <h1 className="text-4xl lg:text-5xl font-bold text-white mb-6">
               Preguntas <span className="text-blue-200">Frecuentes</span>
             </h1>
             <p className="text-xl text-gray-300 max-w-3xl mx-auto">
-              Todo lo que necesitas saber sobre Spear, la plataforma blockchain 
+              Todo lo que necesitas saber sobre Spear, la plataforma blockchain
               para freelancers que está revolucionando el trabajo remoto.
             </p>
           </div>
@@ -77,8 +77,8 @@ export default function FAQPage() {
             <div className="bg-white/5 border border-white/10 rounded-3xl backdrop-blur-xl p-8 lg:p-12">
               <Accordion type="single" collapsible className="space-y-4">
                 {faqs.map((faq, index) => (
-                  <AccordionItem 
-                    key={index} 
+                  <AccordionItem
+                    key={index}
                     value={`item-${index}`}
                     className="border border-white/10 rounded-xl bg-white/5 backdrop-blur-sm px-6"
                   >
@@ -105,16 +105,16 @@ export default function FAQPage() {
               <p className="text-gray-300 mb-8 text-lg">
                 Nuestro equipo está aquí para ayudarte. Contáctanos y te responderemos en menos de 24 horas.
               </p>
-              
+
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <a 
+                <a
                   href="mailto:support@spear.com"
                   className="bg-blue-200 hover:bg-blue-300 text-black font-semibold px-8 py-3 rounded-xl transition-all hover:scale-105 inline-block"
                 >
                   Contactar Soporte
                 </a>
-                <a 
-                  href="/admin/login"
+                <a
+                  href="/login"
                   className="border border-blue-200/50 text-blue-200 hover:bg-blue-200/10 hover:border-blue-200 px-8 py-3 rounded-xl transition-all inline-block"
                 >
                   Iniciar Sesión
@@ -129,15 +129,15 @@ export default function FAQPage() {
     </div>
   )
 }
-                  <p className="text-neutral-300">
-                    Pricing is based on animation length, complexity, number of renders, and modeling requirements. You
-                    can view our detailed pricing on our{" "}
-                    <a href="/pricing" className="text-blue-200 underline">
-                      pricing page
-                    </a>
-                    .
-                  </p>
-                </section>
+<p className="text-neutral-300">
+  Pricing is based on animation length, complexity, number of renders, and modeling requirements. You
+  can view our detailed pricing on our{" "}
+  <a href="/pricing" className="text-blue-200 underline">
+    pricing page
+  </a>
+  .
+</p>
+                </section >
 
                 <section className="space-y-3">
                   <h2 className="text-2xl font-semibold text-white">5. Can we request changes after delivery?</h2>
@@ -198,12 +198,12 @@ export default function FAQPage() {
                     with your project details, references, and timeline. We’ll provide a proposal and next steps.
                   </p>
                 </section>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-      <AppverseFooter />
+              </div >
+            </div >
+          </div >
+        </div >
+      </section >
+  <AppverseFooter />
     </>
   )
 }

@@ -2,7 +2,7 @@
 
 ## 🚀 Descripción General
 
-Spear utiliza contratos inteligentes en Ethereum para crear un sistema de escrow descentralizado que protege tanto a clientes como a freelancers. El contrato maneja pagos por milestones, fondos de riesgo y comisiones de forma transparente y automática.
+Spear utiliza contratos inteligentes en Polkadot Asset Hub TestNet para crear un sistema de escrow descentralizado que protege tanto a clientes como a freelancers. El contrato maneja pagos por milestones, fondos de riesgo y comisiones de forma transparente y automática.
 
 ## 📋 Características del Contrato
 
@@ -17,23 +17,20 @@ Spear utiliza contratos inteligentes en Ethereum para crear un sistema de escrow
 
 ### 🔧 Límites y Restricciones
 
-- **Mínimo por proyecto**: 10 USDT
+- **Mínimo por proyecto**: 10 PAS
 - **Máximo 5 proyectos activos** por developer
 - **Máximo 10 milestones** por proyecto
 - **Expiración**: 7 días para asignar developer
 
 ## 🌐 Configuración de Red
 
-### Sepolia Testnet (Desarrollo)
+### Polkadot Asset Hub TestNet (Desarrollo y Producción)
 
-- **Chain ID**: `0xaa36a7`
-- **Contrato**: `0xeda2FdE00141C5453fBaf3c6856222A289ba3BE6`
-- **RPC**: `https://sepolia.infura.io/v3/`
-- **Explorer**: [Sepolia Etherscan](https://sepolia.etherscan.io/)
-
-### Mainnet (Producción)
-
-- **Pendiente**: Despliegue en mainnet próximamente
+- **Chain ID**: `0x190f1b46` (420420422 en decimal)
+- **Contrato**: `0xf90f46345E09Bd8C6c265EdEbFa30269891EC259`
+- **RPC**: `https://testnet-passet-hub-eth-rpc.polkadot.io`
+- **Explorer**: [Blockscout Polkadot Asset Hub](https://blockscout-passet-hub.parity-testnet.parity.io/)
+- **Currency**: PAS (18 decimals)
 
 ## 🛠️ Uso de la Interfaz de Prueba
 
@@ -41,13 +38,13 @@ Spear utiliza contratos inteligentes en Ethereum para crear un sistema de escrow
 
 1. **Conectar Wallet**
 
-   - Instala MetaMask
+   - Instala MetaMask o SubWallet
    - Conecta tu wallet
-   - Cambia a Sepolia Testnet
+   - La app agregará automáticamente Polkadot Asset Hub TestNet
 
-2. **Obtener ETH de Prueba**
-   - Usa [Sepolia Faucet](https://sepoliafaucet.com/)
-   - Obtén ETH gratuito para pruebas
+2. **Obtener PAS de Prueba**
+   - Usa el [faucet de Polkadot](https://faucet.polkadot.io/)
+   - Obtén PAS gratuito para pruebas
 
 ### 📝 Creando un Proyecto
 
@@ -55,7 +52,7 @@ Spear utiliza contratos inteligentes en Ethereum para crear un sistema de escrow
 2. Completa el formulario:
    ```
    Descripción: "Desarrollo de landing page"
-   Milestones: "0.1,0.2,0.3" (en ETH)
+   Milestones: "0.1,0.2,0.3" (en PAS)
    Fondo de Riesgo: "0.05" (opcional)
    Protección: Básica o Premium
    ```
@@ -88,7 +85,7 @@ Spear utiliza contratos inteligentes en Ethereum para crear un sistema de escrow
 ### Proyecto Simple
 
 ```solidity
-// Cliente crea proyecto de 1 ETH con 3 milestones
+// Cliente crea proyecto de 1 PAS con 3 milestones
 createProject("Landing page", [0.3, 0.3, 0.4], 0, Basic)
 
 // Developer aplica
@@ -98,15 +95,15 @@ applyToProject(1)
 approveDeveloper(1, "0x...")
 
 // Developer completa milestones uno por uno
-completeMilestone(1, 0) // 0.3 ETH liberado
-completeMilestone(1, 1) // 0.3 ETH liberado
-completeMilestone(1, 2) // 0.4 ETH liberado - Proyecto completado
+completeMilestone(1, 0) // 0.3 PAS liberado
+completeMilestone(1, 1) // 0.3 PAS liberado
+completeMilestone(1, 2) // 0.4 PAS liberado - Proyecto completado
 ```
 
 ### Proyecto con Fondo de Riesgo
 
 ```solidity
-// Cliente agrega 0.1 ETH como fondo de riesgo
+// Cliente agrega 0.1 PAS como fondo de riesgo
 createProject("App móvil", [0.5, 0.5], 0.1, Premium)
 
 // Si todo va bien, el fondo se devuelve al cliente
@@ -145,8 +142,9 @@ npx hardhat test
 npx hardhat node
 npx hardhat run scripts/deploy.js --network localhost
 
-# Verificar en Etherscan
-npx hardhat verify --network sepolia DEPLOYED_CONTRACT_ADDRESS
+# Verificar en Blockscout
+# El contrato ya está deployado en:
+# 0xf90f46345E09Bd8C6c265EdEbFa30269891EC259
 ```
 
 ### Archivos Importantes
@@ -170,7 +168,7 @@ app/test/
 
 1. **"Insufficient funds"**
 
-   - Asegúrate de tener suficiente ETH para gas + monto del proyecto
+   - Asegúrate de tener suficiente PAS para gas + monto del proyecto
 
 2. **"Project does not exist"**
 
@@ -204,7 +202,7 @@ console.log("Gas estimado:", gasEstimate.toString())
 
 Para reportar bugs o solicitar funcionalidades:
 
-1. Verifica en [Sepolia Etherscan](https://sepolia.etherscan.io/address/0xeda2FdE00141C5453fBaf3c6856222A289ba3BE6)
+1. Verifica en [Polkadot Asset Hub Blockscout](https://blockscout.passets.io/address/0xf90f46345E09Bd8C6c265EdEbFa30269891EC259)
 2. Revisa los logs de transacciones fallidas
 3. Contacta al equipo de desarrollo con detalles específicos
 

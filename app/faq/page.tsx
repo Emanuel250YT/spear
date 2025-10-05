@@ -23,7 +23,7 @@ export default function FAQPage() {
     },
     {
       question: "¿Puedo trabajar con criptomonedas?",
-      answer: "Sí, Spear acepta tanto criptomonedas como monedas fiat. Puedes recibir pagos en ETH, USDC, y otras criptomonedas populares, o convertir automáticamente a tu moneda local."
+      answer: "Sí, Spear funciona completamente con criptomonedas en la red Polkadot Asset Hub. Los pagos se realizan en PAS (Polkadot Asset Hub native token), asegurando transacciones rápidas y con bajas comisiones en una red descentralizada."
     },
     {
       question: "¿Qué tipos de servicios puedo ofrecer?",
@@ -114,7 +114,7 @@ export default function FAQPage() {
                   Contactar Soporte
                 </a>
                 <a
-                  href="/admin/login"
+                  href="/login"
                   className="border border-blue-200/50 text-blue-200 hover:bg-blue-200/10 hover:border-blue-200 px-8 py-3 rounded-xl transition-all inline-block"
                 >
                   Iniciar Sesión

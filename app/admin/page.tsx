@@ -323,7 +323,7 @@ export default function AdminDashboard() {
           setActivityItems(JSON.parse(savedActivity))
         }
       } else {
-        router.push("/admin/login")
+        router.push("/login")
       }
       setIsLoading(false)
     }
@@ -339,7 +339,7 @@ export default function AdminDashboard() {
 
   const handleLogout = () => {
     document.cookie = "admin-session=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT"
-    router.push("/admin/login")
+    router.push("/login")
   }
 
   const handleContentChange = (section: keyof ContentData, field: string, value: string | string[]) => {
@@ -529,7 +529,7 @@ export default function AdminDashboard() {
   if (isLoading) {
     return (
       <div className="min-h-screen bg-[#0a0a0a] flex items-center justify-center">
-        <div className="w-6 h-6 border-2 border-[#C6FF3A] border-t-transparent rounded-full animate-spin"></div>
+        <div className="w-6 h-6 border-2 border-[#bfdbfe] border-t-transparent rounded-full animate-spin"></div>
       </div>
     )
   }
@@ -687,7 +687,7 @@ export default function AdminDashboard() {
               <Button
                 onClick={handleSave}
                 disabled={!hasChanges || isSaving}
-                className="bg-[#C6FF3A] text-black hover:bg-[#C6FF3A]/90"
+                className="bg-[#bfdbfe] text-black hover:bg-[#bfdbfe]/90"
               >
                 <Save className="h-4 w-4 mr-2" />
                 {isSaving ? "Saving..." : "Save Changes"}
@@ -712,19 +712,19 @@ export default function AdminDashboard() {
             <TabsList className="grid w-full grid-cols-3 bg-neutral-900/50 border border-neutral-800">
               <TabsTrigger
                 value="hero"
-                className="data-[state=active]:bg-[#C6FF3A]/20 data-[state=active]:text-[#C6FF3A]"
+                className="data-[state=active]:bg-[#bfdbfe]/20 data-[state=active]:text-[#bfdbfe]"
               >
                 Hero
               </TabsTrigger>
               <TabsTrigger
                 value="features"
-                className="data-[state=active]:bg-[#C6FF3A]/20 data-[state=active]:text-[#C6FF3A]"
+                className="data-[state=active]:bg-[#bfdbfe]/20 data-[state=active]:text-[#bfdbfe]"
               >
                 Features
               </TabsTrigger>
               <TabsTrigger
                 value="footer"
-                className="data-[state=active]:bg-[#C6FF3A]/20 data-[state=active]:text-[#C6FF3A]"
+                className="data-[state=active]:bg-[#bfdbfe]/20 data-[state=active]:text-[#bfdbfe]"
               >
                 Footer
               </TabsTrigger>
@@ -849,7 +849,7 @@ export default function AdminDashboard() {
               <Button
                 onClick={handleSave}
                 disabled={!hasChanges || isSaving}
-                className="bg-[#C6FF3A] text-black hover:bg-[#C6FF3A]/90"
+                className="bg-[#bfdbfe] text-black hover:bg-[#bfdbfe]/90"
               >
                 <Save className="h-4 w-4 mr-2" />
                 {isSaving ? "Saving..." : "Save Changes"}
@@ -878,19 +878,19 @@ export default function AdminDashboard() {
             <TabsList className="grid w-full grid-cols-3 bg-neutral-900/50 border border-neutral-800">
               <TabsTrigger
                 value="startup"
-                className="data-[state=active]:bg-[#C6FF3A]/20 data-[state=active]:text-[#C6FF3A]"
+                className="data-[state=active]:bg-[#bfdbfe]/20 data-[state=active]:text-[#bfdbfe]"
               >
                 Startup
               </TabsTrigger>
               <TabsTrigger
                 value="pro"
-                className="data-[state=active]:bg-[#C6FF3A]/20 data-[state=active]:text-[#C6FF3A]"
+                className="data-[state=active]:bg-[#bfdbfe]/20 data-[state=active]:text-[#bfdbfe]"
               >
                 Pro
               </TabsTrigger>
               <TabsTrigger
                 value="premium"
-                className="data-[state=active]:bg-[#C6FF3A]/20 data-[state=active]:text-[#C6FF3A]"
+                className="data-[state=active]:bg-[#bfdbfe]/20 data-[state=active]:text-[#bfdbfe]"
               >
                 Premium
               </TabsTrigger>
@@ -1041,7 +1041,7 @@ export default function AdminDashboard() {
               <Button
                 onClick={handleSave}
                 disabled={!hasChanges || isSaving}
-                className="bg-[#C6FF3A] text-black hover:bg-[#C6FF3A]/90"
+                className="bg-[#bfdbfe] text-black hover:bg-[#bfdbfe]/90"
               >
                 <Save className="h-4 w-4 mr-2" />
                 {isSaving ? "Saving..." : "Save Changes"}
@@ -1066,25 +1066,25 @@ export default function AdminDashboard() {
             <TabsList className="grid w-full grid-cols-4 bg-neutral-900/50 border border-neutral-800">
               <TabsTrigger
                 value="settings"
-                className="data-[state=active]:bg-[#C6FF3A]/20 data-[state=active]:text-[#C6FF3A]"
+                className="data-[state=active]:bg-[#bfdbfe]/20 data-[state=active]:text-[#bfdbfe]"
               >
                 Settings
               </TabsTrigger>
               <TabsTrigger
                 value="modeling"
-                className="data-[state=active]:bg-[#C6FF3A]/20 data-[state=active]:text-[#C6FF3A]"
+                className="data-[state=active]:bg-[#bfdbfe]/20 data-[state=active]:text-[#bfdbfe]"
               >
                 3D Modeling
               </TabsTrigger>
               <TabsTrigger
                 value="renders"
-                className="data-[state=active]:bg-[#C6FF3A]/20 data-[state=active]:text-[#C6FF3A]"
+                className="data-[state=active]:bg-[#bfdbfe]/20 data-[state=active]:text-[#bfdbfe]"
               >
                 Renders
               </TabsTrigger>
               <TabsTrigger
                 value="flow"
-                className="data-[state=active]:bg-[#C6FF3A]/20 data-[state=active]:text-[#C6FF3A]"
+                className="data-[state=active]:bg-[#bfdbfe]/20 data-[state=active]:text-[#bfdbfe]"
               >
                 Form Flow
               </TabsTrigger>
@@ -1277,7 +1277,7 @@ export default function AdminDashboard() {
                   {content.orderForm.formSteps.map((step, index) => (
                     <div key={index} className="flex items-center gap-4 p-4 border border-neutral-700 rounded-lg">
                       <div className="flex items-center gap-3">
-                        <div className="w-8 h-8 bg-[#C6FF3A]/20 rounded-full flex items-center justify-center text-[#C6FF3A] font-semibold">
+                        <div className="w-8 h-8 bg-[#bfdbfe]/20 rounded-full flex items-center justify-center text-[#bfdbfe] font-semibold">
                           {index + 1}
                         </div>
                         <div className="flex-1 space-y-2">
@@ -1312,11 +1312,10 @@ export default function AdminDashboard() {
                             newSteps[index].enabled = !newSteps[index].enabled
                             handleContentChange("orderForm", "formSteps", newSteps)
                           }}
-                          className={`${
-                            step.enabled
+                          className={`${step.enabled
                               ? "text-green-400 hover:text-green-300"
                               : "text-neutral-500 hover:text-neutral-400"
-                          }`}
+                            }`}
                         >
                           <CheckCircle className="h-4 w-4" />
                         </Button>
@@ -1340,7 +1339,7 @@ export default function AdminDashboard() {
                       {content.orderForm.formSteps
                         .filter((step) => step.enabled)
                         .map((step, index) => (
-                          <Badge key={index} className="bg-[#C6FF3A]/20 text-[#C6FF3A] border-[#C6FF3A]/30">
+                          <Badge key={index} className="bg-[#bfdbfe]/20 text-[#bfdbfe] border-[#bfdbfe]/30">
                             {index + 1}. {step.title}
                           </Badge>
                         ))}
@@ -1541,7 +1540,7 @@ export default function AdminDashboard() {
             <Button
               onClick={handleSave}
               disabled={!hasChanges || isSaving}
-              className="bg-[#C6FF3A] text-black hover:bg-[#C6FF3A]/90"
+              className="bg-[#bfdbfe] text-black hover:bg-[#bfdbfe]/90"
             >
               <Save className="h-4 w-4 mr-2" />
               {isSaving ? "Saving..." : "Save Settings"}
@@ -1566,7 +1565,7 @@ export default function AdminDashboard() {
               </CardHeader>
               <CardContent className="space-y-3">
                 <div className="flex items-start gap-3">
-                  <div className="w-6 h-6 bg-[#C6FF3A] rounded-full flex items-center justify-center text-black text-sm font-bold">
+                  <div className="w-6 h-6 bg-[#bfdbfe] rounded-full flex items-center justify-center text-black text-sm font-bold">
                     1
                   </div>
                   <div>
@@ -1575,7 +1574,7 @@ export default function AdminDashboard() {
                   </div>
                 </div>
                 <div className="flex items-start gap-3">
-                  <div className="w-6 h-6 bg-[#C6FF3A] rounded-full flex items-center justify-center text-black text-sm font-bold">
+                  <div className="w-6 h-6 bg-[#bfdbfe] rounded-full flex items-center justify-center text-black text-sm font-bold">
                     2
                   </div>
                   <div>
@@ -1584,7 +1583,7 @@ export default function AdminDashboard() {
                   </div>
                 </div>
                 <div className="flex items-start gap-3">
-                  <div className="w-6 h-6 bg-[#C6FF3A] rounded-full flex items-center justify-center text-black text-sm font-bold">
+                  <div className="w-6 h-6 bg-[#bfdbfe] rounded-full flex items-center justify-center text-black text-sm font-bold">
                     3
                   </div>
                   <div>
@@ -1687,11 +1686,10 @@ export default function AdminDashboard() {
                       setSelectedPage(item.id)
                       setSidebarOpen(false)
                     }}
-                    className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-left transition-colors ${
-                      selectedPage === item.id
+                    className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-left transition-colors ${selectedPage === item.id
                         ? "bg-neutral-800 text-white"
                         : "text-neutral-400 hover:text-white hover:bg-neutral-800/50"
-                    }`}
+                      }`}
                   >
                     <item.icon className="h-5 w-5" />
                     <span>{item.name}</span>
@@ -1732,11 +1730,10 @@ export default function AdminDashboard() {
               <button
                 key={item.id}
                 onClick={() => setSelectedPage(item.id)}
-                className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-left transition-colors ${
-                  selectedPage === item.id
+                className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-left transition-colors ${selectedPage === item.id
                     ? "bg-neutral-800 text-white"
                     : "text-neutral-400 hover:text-white hover:bg-neutral-800/50"
-                }`}
+                  }`}
               >
                 <item.icon className="h-5 w-5" />
                 <span>{item.name}</span>

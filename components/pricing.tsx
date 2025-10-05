@@ -7,6 +7,7 @@ import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/componen
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { CheckCircle2, Shield, Zap, Users, TrendingUp, Calculator, DollarSign } from "lucide-react"
+import { SmartLoginButton } from "@/components/ui/smart-login-button"
 
 type Feature = { text: string; muted?: boolean }
 
@@ -190,15 +191,12 @@ export function Pricing() {
             Protección básica gratis para todos. Solo pagas comisión si eliges nuestros servicios premium.
           </p>
           <div className="mt-6">
-            <Button
-              asChild
-              className="rounded-full px-5 text-neutral-900 hover:brightness-95"
+            <SmartLoginButton
+              className="rounded-full px-5 py-2 text-neutral-900 hover:brightness-95"
               style={{ backgroundColor: ACCENT }}
             >
-              <Link href="/admin/login">
-                Conectar Wallet
-              </Link>
-            </Button>
+              Conectar Wallet
+            </SmartLoginButton>
           </div>
         </div>
 
@@ -243,14 +241,12 @@ export function Pricing() {
             </CardContent>
 
             <CardFooter className="p-6 pt-0">
-              <Button
-                asChild
-                size="lg"
-                className="w-full rounded-lg text-neutral-900 hover:brightness-95"
+              <SmartLoginButton
+                className="w-full rounded-lg text-neutral-900 hover:brightness-95 px-4 py-2 text-lg"
                 style={{ backgroundColor: ACCENT }}
               >
-                <Link href="/admin/login">Empezar ahora</Link>
-              </Button>
+                Empezar ahora
+              </SmartLoginButton>
             </CardFooter>
           </Card>
 
@@ -295,14 +291,12 @@ export function Pricing() {
             </CardContent>
 
             <CardFooter className="p-6 pt-0">
-              <Button
-                asChild
-                size="lg"
-                className="w-full rounded-lg text-neutral-900 hover:brightness-95"
+              <SmartLoginButton
+                className="w-full rounded-lg text-neutral-900 hover:brightness-95 px-4 py-2 text-lg"
                 style={{ backgroundColor: ACCENT }}
               >
-                <Link href="/admin/login">Empezar ahora</Link>
-              </Button>
+                Empezar ahora
+              </SmartLoginButton>
             </CardFooter>
           </Card>
 
@@ -346,14 +340,12 @@ export function Pricing() {
             </CardContent>
 
             <CardFooter className="p-6 pt-0">
-              <Button
-                asChild
-                size="lg"
-                className="w-full rounded-lg text-neutral-900 hover:brightness-95"
+              <SmartLoginButton
+                className="w-full rounded-lg text-neutral-900 hover:brightness-95 px-4 py-2 text-lg"
                 style={{ backgroundColor: ACCENT }}
               >
-                <Link href="/admin/login">Empezar ahora</Link>
-              </Button>
+                Empezar ahora
+              </SmartLoginButton>
             </CardFooter>
           </Card>
         </div>

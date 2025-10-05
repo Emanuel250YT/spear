@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { SiteHeader } from "@/components/site-header"
 import { AppverseFooter } from "@/components/appverse-footer"
+import { SmartLoginButton } from "@/components/ui/smart-login-button"
 import { Wallet, FileText, Handshake, DollarSign, Shield, MessageCircle } from "lucide-react"
 import Link from "next/link"
 
@@ -317,13 +318,11 @@ export default function ComoFunciona() {
             <p className="text-xl text-gray-300 mb-8 max-w-2xl mx-auto">
               Únete a la revolución del freelancing blockchain en Latinoamérica
             </p>
-            <Button
-              asChild
-              size="lg"
-              className="bg-blue-200 text-black font-medium rounded-lg px-8 py-3 hover:bg-lime-300"
+            <SmartLoginButton
+              className="bg-blue-200 text-black font-medium rounded-lg px-8 py-3 hover:bg-blue-300 text-lg"
             >
-              <Link href="/admin/login">Conectar Wallet y Empezar</Link>
-            </Button>
+              Conectar Wallet y Empezar
+            </SmartLoginButton>
           </section>
         </div>
       </main>

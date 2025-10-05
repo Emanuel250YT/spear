@@ -59,7 +59,7 @@ export default function TestPage() {
     clearError
   } = useSpearContract()
 
-  // Helper function para convertir Wei a Ether
+  // Helper function para convertir Wei a PAS
   const formatWeiToEther = (wei: bigint): string => {
     if (!provider) return '0'
     return provider.utils.fromWei(wei.toString(), 'ether')
@@ -796,7 +796,7 @@ export default function TestPage() {
                     <CardContent className="space-y-4">
                       <div>
                         <p className="text-sm text-gray-400">Mínimo por Proyecto</p>
-                        <p className="text-blue-200">10 USDT</p>
+                        <p className="text-blue-200">10 PAS</p>
                       </div>
                       <div>
                         <p className="text-sm text-gray-400">Máx. Proyectos/Developer</p>

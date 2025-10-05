@@ -142,8 +142,7 @@ lib/
 El sistema está configurado para trabajar con:
 
 - **Hardhat Local** (Chain ID: 31337)
-- **Sepolia Testnet** (Chain ID: 11155111)
-- **Ethereum Mainnet** (Chain ID: 1)
+- **Polkadot Asset Hub TestNet** (Chain ID: 420420422)
 
 ### 📝 .gitignore Mejorado
 

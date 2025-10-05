@@ -2,14 +2,13 @@ import { Button } from "@/components/ui/button"
 import Image from "next/image"
 import Link from "next/link"
 import { Code2, Palette, Smartphone, TrendingUp, BarChart3, Lock } from "lucide-react"
+import { SmartLoginButton } from "@/components/ui/smart-login-button"
 
 export function Hero() {
   const buttonNew = (
-    <Button asChild className="rounded-full bg-blue-200 px-6 text-black hover:bg-blue-300 transition-all duration-300">
-      <Link href="/admin/login">
-        Conectar Wallet
-      </Link>
-    </Button>
+    <SmartLoginButton className="rounded-full bg-blue-200 px-6 py-2 text-black hover:bg-blue-300 transition-all duration-300">
+      Conectar Wallet
+    </SmartLoginButton>
   )
 
   const categoryData = [

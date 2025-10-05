@@ -429,7 +429,7 @@ export default function CheckoutPage() {
   if (!isInitialized || !order.package) {
     return (
       <div className="min-h-screen bg-[#0a0a0a] flex items-center justify-center">
-        <div className="w-6 h-6 border-2 border-[#C6FF3A] border-t-transparent rounded-full animate-spin"></div>
+        <div className="w-6 h-6 border-2 border-[#bfdbfe] border-t-transparent rounded-full animate-spin"></div>
       </div>
     )
   }
@@ -457,7 +457,7 @@ export default function CheckoutPage() {
             {/* Inline Plan Name and Price */}
             <div className="flex items-center justify-between flex-1 mx-3 sm:mx-4">
               <div className="text-base font-semibold text-white sm:text-lg">{order.package.name} Plan</div>
-              <div className="text-base font-bold text-[#C6FF3A] sm:text-lg">{formatPrice(calculateTotal())}</div>
+              <div className="text-base font-bold text-[#bfdbfe] sm:text-lg">{formatPrice(calculateTotal())}</div>
             </div>
             <div className="w-8 sm:w-10" /> {/* Spacer for balance */}
           </div>
@@ -465,7 +465,7 @@ export default function CheckoutPage() {
           {/* Refined Progress Bar */}
           <div className="h-0.5 bg-neutral-800 rounded-full overflow-hidden sm:h-1">
             <div
-              className="h-full bg-[#C6FF3A] rounded-full transition-all duration-500 ease-out"
+              className="h-full bg-[#bfdbfe] rounded-full transition-all duration-500 ease-out"
               style={{ width: `${getProgressPercentage()}%` }}
             />
           </div>
@@ -523,9 +523,9 @@ export default function CheckoutPage() {
                     </div>
                   )}
 
-                  <div className="flex justify-between items-center py-4 bg-[#C6FF3A]/10 rounded-xl px-4 mt-4 sm:py-6 sm:rounded-2xl sm:px-6 sm:mt-6">
+                  <div className="flex justify-between items-center py-4 bg-[#bfdbfe]/10 rounded-xl px-4 mt-4 sm:py-6 sm:rounded-2xl sm:px-6 sm:mt-6">
                     <h4 className="text-lg font-bold text-white sm:text-xl">Total</h4>
-                    <span className="text-2xl font-bold text-[#C6FF3A] sm:text-3xl">
+                    <span className="text-2xl font-bold text-[#bfdbfe] sm:text-3xl">
                       {formatPrice(calculateTotal())}
                     </span>
                   </div>
@@ -554,18 +554,18 @@ export default function CheckoutPage() {
                       <div className="text-2xl flex-shrink-0 sm:text-3xl">{option.emoji}</div>
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center justify-between">
-                          <div className="font-semibold text-white text-base group-hover:text-[#C6FF3A] transition-colors sm:text-lg">
+                          <div className="font-semibold text-white text-base group-hover:text-[#bfdbfe] transition-colors sm:text-lg">
                             {option.title}
                           </div>
                           {option.price && (
-                            <div className="text-[#C6FF3A] font-bold text-sm sm:text-base">{option.price}</div>
+                            <div className="text-[#bfdbfe] font-bold text-sm sm:text-base">{option.price}</div>
                           )}
                         </div>
                         {option.subtitle && (
                           <div className="text-neutral-400 text-sm mt-1 sm:text-base">{option.subtitle}</div>
                         )}
                       </div>
-                      <ArrowRight className="h-5 w-5 text-neutral-600 group-hover:text-[#C6FF3A] transition-colors flex-shrink-0 sm:h-6 sm:w-6 sm:ml-3" />
+                      <ArrowRight className="h-5 w-5 text-neutral-600 group-hover:text-[#bfdbfe] transition-colors flex-shrink-0 sm:h-6 sm:w-6 sm:ml-3" />
                     </div>
                   </Button>
                 ))}
@@ -590,7 +590,7 @@ export default function CheckoutPage() {
 
             <Button
               onClick={handleConfirmOrder}
-              className="w-full h-12 text-base font-semibold bg-[#C6FF3A] text-black hover:bg-[#C6FF3A]/90 rounded-xl shadow-lg shadow-[#C6FF3A]/20 sm:h-16 sm:text-xl sm:rounded-2xl"
+              className="w-full h-12 text-base font-semibold bg-[#bfdbfe] text-black hover:bg-[#bfdbfe]/90 rounded-xl shadow-lg shadow-[#bfdbfe]/20 sm:h-16 sm:text-xl sm:rounded-2xl"
             >
               Send Order via WhatsApp
               <ArrowRight className="h-4 w-4 ml-2 sm:h-6 sm:w-6 sm:ml-3" />

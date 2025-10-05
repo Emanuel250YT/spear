@@ -38,7 +38,7 @@ export enum ProjectStatus {
 
 // Constantes del contrato
 export const CONTRACT_CONSTANTS = {
-  MIN_PROJECT_AMOUNT: 10 * 10 ** 6, // 10 USDT (6 decimales)
+  MIN_PROJECT_AMOUNT: 10 * 10 ** 18, // 10 PAS (18 decimales)
   MAX_DEVELOPER_PROJECTS: 5,
   PROJECT_EXPIRATION_TIME: 7 * 24 * 60 * 60, // 7 días en segundos
   BASIC_COMMISSION: 0, // 0%
@@ -78,8 +78,8 @@ export interface ProjectDetails {
 
 export interface CreateProjectParams {
   description: string;
-  milestoneAmounts: string[]; // En ETH como strings
-  riskFund: string; // En ETH como string
+  milestoneAmounts: string[]; // En PAS como strings
+  riskFund: string; // En PAS como string
   protection: ProtectionType;
 }
 

@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
 import { Instagram, Twitter, MessageCircle, Github, Linkedin } from "lucide-react"
 import Image from "next/image"
+import { SmartLoginButton } from "@/components/ui/smart-login-button"
 
 interface FooterContent {
   tagline: string
@@ -25,14 +26,11 @@ export function AppverseFooter() {
       {/* Contact CTA */}
       <div className="container mx-auto px-4 pt-12 sm:pt-16">
         <div className="flex justify-center">
-          <Button
-            asChild
+          <SmartLoginButton
             className="rounded-full bg-blue-200 px-6 py-2 text-sm font-medium text-black shadow-[0_0_20px_rgba(163,230,53,0.35)] hover:bg-blue-300"
           >
-            <Link href="/admin/login">
-              Conectar Wallet
-            </Link>
-          </Button>
+            Conectar Wallet
+          </SmartLoginButton>
         </div>
       </div>
 
@@ -55,7 +53,7 @@ export function AppverseFooter() {
               <p className="text-sm text-neutral-400 leading-relaxed mb-6">
                 {content.tagline}
               </p>
-              
+
               {/* Social Links */}
               <div className="flex items-center gap-4">
                 <a
@@ -119,7 +117,7 @@ export function AppverseFooter() {
                   </Link>
                 </li>
                 <li>
-                  <Link href="/admin/login" className="hover:text-blue-300 transition-colors">
+                  <Link href="/login" className="hover:text-blue-300 transition-colors">
                     Dashboard
                   </Link>
                 </li>

@@ -2,6 +2,7 @@ import { SiteHeader } from "@/components/site-header"
 import { AppverseFooter } from "@/components/appverse-footer"
 import { Shield, Users, Zap, Globe, Award, TrendingUp } from "lucide-react"
 import { Button } from "@/components/ui/button"
+import { SmartLoginButton } from "@/components/ui/smart-login-button"
 import Link from "next/link"
 
 export default function AboutPage() {
@@ -72,12 +73,12 @@ export default function AboutPage() {
       />
 
       <SiteHeader />
-      
+
       <main className="pt-20">
         {/* Hero Section */}
         <section className="relative py-20 lg:py-32">
           <div className="absolute inset-0 bg-gradient-to-br from-blue-900/20 via-purple-900/20 to-indigo-900/20" />
-          
+
           <div className="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center mb-16">
               <h1 className="text-4xl lg:text-6xl font-bold text-white mb-8">
@@ -85,7 +86,7 @@ export default function AboutPage() {
                 con blockchain
               </h1>
               <p className="text-xl lg:text-2xl text-gray-300 max-w-4xl mx-auto leading-relaxed">
-                Spear es la primera plataforma descentralizada que conecta clientes con 
+                Spear es la primera plataforma descentralizada que conecta clientes con
                 freelancers de élite utilizando la seguridad y transparencia de la tecnología blockchain.
               </p>
             </div>
@@ -114,8 +115,8 @@ export default function AboutPage() {
                   Nuestra Misión
                 </h2>
                 <p className="text-xl text-gray-300 max-w-4xl mx-auto leading-relaxed">
-                  Democratizar el acceso al talento tecnológico global, eliminando intermediarios 
-                  innecesarios y creando un ecosistema de trabajo justo, transparente y eficiente 
+                  Democratizar el acceso al talento tecnológico global, eliminando intermediarios
+                  innecesarios y creando un ecosistema de trabajo justo, transparente y eficiente
                   que beneficie tanto a freelancers como a clientes.
                 </p>
               </div>
@@ -126,19 +127,19 @@ export default function AboutPage() {
                     El Futuro del Trabajo es Descentralizado
                   </h3>
                   <p className="text-gray-300 leading-relaxed">
-                    En Spear, creemos que la tecnología blockchain puede transformar 
-                    fundamentalmente cómo trabajamos. Eliminamos la necesidad de confiar 
-                    en terceros, reducimos costos y tiempos de transacción, y creamos 
+                    En Spear, creemos que la tecnología blockchain puede transformar
+                    fundamentalmente cómo trabajamos. Eliminamos la necesidad de confiar
+                    en terceros, reducimos costos y tiempos de transacción, y creamos
                     un ambiente donde la calidad y la innovación son recompensadas de forma justa.
                   </p>
                   <p className="text-gray-300 leading-relaxed">
-                    Nuestra plataforma no es solo un marketplace - es un ecosistema completo 
-                    que incluye herramientas de colaboración, sistemas de reputación basados 
-                    en blockchain, y contratos inteligentes que protegen tanto a freelancers 
+                    Nuestra plataforma no es solo un marketplace - es un ecosistema completo
+                    que incluye herramientas de colaboración, sistemas de reputación basados
+                    en blockchain, y contratos inteligentes que protegen tanto a freelancers
                     como a clientes.
                   </p>
                 </div>
-                
+
                 <div className="relative">
                   <div className="grid grid-cols-2 gap-4">
                     <div className="bg-blue-600/20 border border-blue-200/30 rounded-2xl p-6 backdrop-blur-sm">
@@ -202,21 +203,19 @@ export default function AboutPage() {
                 ¿Listo para formar parte del futuro?
               </h3>
               <p className="text-gray-300 mb-8 text-lg">
-                Únete a la revolución del trabajo descentralizado. Conecta con oportunidades globales 
+                Únete a la revolución del trabajo descentralizado. Conecta con oportunidades globales
                 o encuentra el talento perfecto para tu proyecto.
               </p>
-              
+
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <Button 
-                  size="lg" 
-                  className="bg-blue-200 hover:bg-blue-300 text-black font-semibold px-8 py-3 rounded-xl transition-all hover:scale-105"
-                  asChild
+                <SmartLoginButton
+                  className="bg-blue-200 hover:bg-blue-300 text-black font-semibold px-8 py-3 rounded-xl transition-all hover:scale-105 text-lg"
                 >
-                  <Link href="/admin/login">Empezar Ahora</Link>
-                </Button>
-                <Button 
-                  size="lg" 
-                  variant="outline" 
+                  Empezar Ahora
+                </SmartLoginButton>
+                <Button
+                  size="lg"
+                  variant="outline"
                   className="border-blue-200/50 text-blue-200 hover:bg-blue-200/10 hover:border-blue-200 px-8 py-3 rounded-xl transition-all"
                   asChild
                 >
