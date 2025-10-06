@@ -138,7 +138,7 @@ export const Web3Provider: React.FC<Web3ProviderProps> = ({ children }) => {
         console.log('🌟 Usando Talisman');
       } else if (window.ethereum) {
         provider = window.ethereum;
-        console.log('🦊 Usando wallet detectada:', window.ethereum.isSubWallet ? 'SubWallet' : 'Otra wallet');
+        console.log('🦊 Usando wallet detectada:', (window.ethereum as any).isSubWallet ? 'SubWallet' : 'Otra wallet');
       } else {
         throw new Error('Por favor instala una wallet compatible (SubWallet, MetaMask, etc.)');
       }

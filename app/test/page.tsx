@@ -388,7 +388,6 @@ export default function TestPage() {
                           </p>
                         </div>
 
-<<<<<<< HEAD
                       <div>
                         <label className="block text-sm font-medium mb-2 text-gray-300">
                           Fondo de Riesgo (PAS)
@@ -444,7 +443,7 @@ export default function TestPage() {
                           <li><strong>Gas Reserve:</strong> Se agregan automáticamente 50 PAS para cubrir costos de transacción.</li>
                         </ul>
                       </div>
-=======
+
                         <Button
                           type="submit"
                           disabled={isLoading}
@@ -465,7 +464,6 @@ export default function TestPage() {
                       </form>
                     </CardContent>
                   </Card>
->>>>>>> 476ad5b6864e51e69e7866aa59cf5117cc2cd434
 
                   <Card className="bg-white/5 border-white/10">
                     <CardHeader>

@@ -233,7 +233,7 @@ contract SpearEscrowSimplified {
      */
     function cancelProject(
         uint256 _id,
-        string memory _reason
+        string memory /* _reason */
     ) external onlyClient(_id) {
         Project storage project = projects[_id];
         require(
