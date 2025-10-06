@@ -1,12 +1,13 @@
-import hre from "hardhat";
+import pkg from "hardhat";
+const { ethers } = pkg;
 
 async function main() {
   console.log("🚀 Deploying SpearEscrowV2...");
 
-  const [deployer] = await hre.ethers.getSigners();
+  const [deployer] = await ethers.getSigners();
   console.log("📝 Deploying with account:", deployer.address);
 
-  const SpearEscrowV2 = await hre.ethers.getContractFactory("SpearEscrowV2");
+  const SpearEscrowV2 = await ethers.getContractFactory("SpearEscrowV2");
   const spearEscrow = await SpearEscrowV2.deploy();
 
   await spearEscrow.waitForDeployment();
@@ -21,8 +22,8 @@ async function main() {
   const premiumDiscount = await spearEscrow.PREMIUM_DISCOUNT();
 
   console.log("\n📊 Contract Constants:");
-  console.log("- Min Project Amount:", hre.ethers.formatUnits(minAmount, 6), "USDT");
-  console.log("- Premium Threshold:", hre.ethers.formatUnits(premiumThreshold, 6), "USDT");
+  console.log("- Min Project Amount:", ethers.formatUnits(minAmount, 6), "USDT");
+  console.log("- Premium Threshold:", ethers.formatUnits(premiumThreshold, 6), "USDT");
   console.log("- Base Fee Percentage:", (Number(baseFeePercentage) / 100).toFixed(2) + "%");
   console.log("- Premium Discount:", (Number(premiumDiscount) / 100).toFixed(2) + "%");
 

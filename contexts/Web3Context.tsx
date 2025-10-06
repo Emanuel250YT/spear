@@ -100,9 +100,11 @@ export const Web3Provider: React.FC<Web3ProviderProps> = ({ children }) => {
       };
 
       const handleChainChanged = (newChainId: string) => {
+        const isCorrect = newChainId.toLowerCase() === DEFAULT_NETWORK.chainId.toLowerCase();
         setChainId(newChainId);
-        setIsCorrectNetwork(true); // Aceptar cualquier red
+        setIsCorrectNetwork(isCorrect);
         console.log('🔄 Red cambiada:', newChainId);
+        console.log('� Red correcta:', isCorrect ? 'Sí (Polkadot Asset Hub)' : `No (se requiere ${DEFAULT_NETWORK.chainId})`);
         // Reload the page as recommended by MetaMask
         window.location.reload();
       };
@@ -126,7 +128,7 @@ export const Web3Provider: React.FC<Web3ProviderProps> = ({ children }) => {
     try {
       // Detectar provider disponible
       let provider = null;
-      
+
       // Prioridad: SubWallet > Talisman > MetaMask
       if ((window as any).SubWallet) {
         provider = (window as any).SubWallet;
@@ -156,14 +158,49 @@ export const Web3Provider: React.FC<Web3ProviderProps> = ({ children }) => {
       const currentChainId = await web3Instance.eth.getChainId();
       const chainIdHex = '0x' + currentChainId.toString(16);
 
+      // Verificar si está en la red correcta (Polkadot Asset Hub)
+      const isCorrect = chainIdHex === DEFAULT_NETWORK.chainId;
+
       setWeb3(web3Instance);
       setAccount(accounts[0]);
       setChainId(chainIdHex);
       setIsConnected(true);
-      setIsCorrectNetwork(true); // Aceptar cualquier red
+      setIsCorrectNetwork(isCorrect);
 
       console.log('✅ Wallet conectada:', accounts[0]);
       console.log('🌐 Chain ID:', chainIdHex);
+      console.log('🔗 Red correcta:', isCorrect ? 'Sí (Polkadot Asset Hub)' : `No (se requiere ${DEFAULT_NETWORK.chainId})`);
+
+      // Si no está en la red correcta, intentar cambiar automáticamente
+      if (!isCorrect) {
+        console.warn('⚠️ Cambiando automáticamente a Polkadot Asset Hub TestNet...');
+        try {
+          await provider.request({
+            method: 'wallet_switchEthereumChain',
+            params: [{ chainId: DEFAULT_NETWORK.chainId }],
+          });
+          setIsCorrectNetwork(true);
+          console.log('✅ Red cambiada exitosamente a Polkadot Asset Hub');
+        } catch (switchError: any) {
+          // Si la red no existe (código 4902), agregarla
+          if (switchError.code === 4902) {
+            try {
+              await provider.request({
+                method: 'wallet_addEthereumChain',
+                params: [DEFAULT_NETWORK],
+              });
+              setIsCorrectNetwork(true);
+              console.log('✅ Red Polkadot Asset Hub agregada y cambiada exitosamente');
+            } catch (addError) {
+              console.error('❌ Error agregando la red:', addError);
+              throw new Error('No se pudo agregar Polkadot Asset Hub. Por favor agrega la red manualmente.');
+            }
+          } else {
+            console.error('❌ Error cambiando de red:', switchError);
+            throw new Error('No se pudo cambiar a Polkadot Asset Hub. Por favor cambia la red manualmente.');
+          }
+        }
+      }
 
     } catch (err: any) {
       console.error('Error conectando wallet:', err);

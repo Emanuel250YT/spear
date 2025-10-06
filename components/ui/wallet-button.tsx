@@ -160,13 +160,21 @@ export function WalletButton({
           <DropdownMenuItem className="flex flex-col items-start space-y-1">
             <span className="text-sm font-medium">Red:</span>
             <div className="flex items-center space-x-2">
-              <Badge variant="default">
-                {network === '0x1911f0a6' ? 'Polkadot Hub TestNet' : 'Red Conectada'}
+              <Badge variant={isCorrectNetwork ? "default" : "destructive"}>
+                {network === '0x190f1b46' ? '✅ Polkadot Asset Hub' :
+                  network === '0x1' ? '❌ Ethereum Mainnet' :
+                    network === '0xaa36a7' ? '❌ Sepolia Testnet' :
+                      '❌ Red Desconocida'}
               </Badge>
               <span className="text-xs text-muted-foreground">
                 {network}
               </span>
             </div>
+            {!isCorrectNetwork && (
+              <span className="text-xs text-red-600 font-semibold mt-1">
+                ⚠️ Debes estar en Polkadot Asset Hub (PAS)
+              </span>
+            )}
           </DropdownMenuItem>
         )}
 

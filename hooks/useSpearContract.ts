@@ -64,9 +64,41 @@ export function useSpearContract(): UseSpearContractReturn {
       )
       const riskFundWei = provider.utils.toWei(params.riskFund, 'ether')
 
-      const totalValue = milestoneAmountsWei.reduce((acc, amount) =>
+      const totalMilestones = milestoneAmountsWei.reduce((acc, amount) =>
         BigInt(acc) + BigInt(amount), BigInt(0)
-      ) + BigInt(riskFundWei)
+      )
+
+      // ✅ Calcular platformFee SOLO si se seleccionó protección Premium
+      let platformFee = BigInt(0)
+
+      if (params.protection === ProtectionType.Premium) {
+        const PREMIUM_THRESHOLD = BigInt(15000) * BigInt(10 ** 18) // 15,000 PAS
+        const BASE_FEE_PERCENTAGE = BigInt(300) // 3%
+        const PREMIUM_DISCOUNT = BigInt(50) // 0.5%
+
+        let feePercentage: bigint
+        if (totalMilestones >= PREMIUM_THRESHOLD) {
+          feePercentage = BASE_FEE_PERCENTAGE - PREMIUM_DISCOUNT // 2.5%
+        } else {
+          feePercentage = BASE_FEE_PERCENTAGE // 3%
+        }
+
+        platformFee = (totalMilestones * feePercentage) / BigInt(10000)
+        console.log('💎 Protección Premium - Fee ' + (Number(feePercentage) / 100).toFixed(2) + '%:', provider.utils.fromWei(platformFee.toString(), 'ether'), 'PAS')
+      } else {
+        console.log('📦 Protección Básica - SIN comisión (0 PAS)')
+      }
+
+      // ✅ Agregar 50 PAS para cubrir costos de gas de la transacción
+      const GAS_RESERVE = BigInt(50) * BigInt(10 ** 18) // 50 PAS
+      const totalValue = totalMilestones + BigInt(riskFundWei) + platformFee + GAS_RESERVE
+
+      console.log('📊 Desglose:')
+      console.log('  Milestones:', provider.utils.fromWei(totalMilestones.toString(), 'ether'), 'PAS')
+      console.log('  Risk Fund:', provider.utils.fromWei(riskFundWei, 'ether'), 'PAS')
+      console.log('  Platform Fee:', provider.utils.fromWei(platformFee.toString(), 'ether'), 'PAS')
+      console.log('  Gas Reserve:', provider.utils.fromWei(GAS_RESERVE.toString(), 'ether'), 'PAS')
+      console.log('💰 TOTAL:', provider.utils.fromWei(totalValue.toString(), 'ether'), 'PAS')
 
       const tx = await contract!.methods.createProject(
         params.description,

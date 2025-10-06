@@ -69,8 +69,8 @@ export default function TestPage() {
   const [projectForm, setProjectForm] = useState({
     description: '',
     milestones: '',
-    riskFund: '0',
-    protection: ProtectionType.Basic
+    riskFund: '10', // Valor por defecto razonable
+    protection: ProtectionType.Basic // ✅ Selector de protección (Básica = SIN comisión, Premium = con comisión)
   })
 
   const [projectId, setProjectId] = useState('')
@@ -117,14 +117,14 @@ export default function TestPage() {
         description: projectForm.description,
         milestoneAmounts,
         riskFund: projectForm.riskFund,
-        protection: projectForm.protection
+        protection: projectForm.protection // ✅ Pasar el tipo de protección
       })
 
       // Limpiar formulario y recargar datos
       setProjectForm({
         description: '',
         milestones: '',
-        riskFund: '0',
+        riskFund: '10',
         protection: ProtectionType.Basic
       })
       await loadInitialData()
@@ -379,12 +379,16 @@ export default function TestPage() {
                         </label>
                         <Input
                           type="number"
-                          step="0.001"
+                          step="0.1"
+                          min="0.1"
                           value={projectForm.riskFund}
                           onChange={(e) => setProjectForm({ ...projectForm, riskFund: e.target.value })}
-                          placeholder="0.0"
+                          placeholder="10"
                           className="bg-white/5 border-white/10 text-white"
                         />
+                        <p className="text-sm text-gray-400 mt-1">
+                          💡 Garantía que se devuelve al completar el proyecto o va al dev si se cancela
+                        </p>
                       </div>
 
                       <div>
@@ -393,16 +397,36 @@ export default function TestPage() {
                         </label>
                         <Select
                           value={projectForm.protection.toString()}
-                          onValueChange={(value) => setProjectForm({ ...projectForm, protection: Number(value) as ProtectionType })}
+                          onValueChange={(value) => setProjectForm({ ...projectForm, protection: parseInt(value) as ProtectionType })}
                         >
                           <SelectTrigger className="bg-white/5 border-white/10 text-white">
                             <SelectValue />
                           </SelectTrigger>
-                          <SelectContent className="bg-gray-900 border-white/10">
-                            <SelectItem value="0">Básica (0% comisión)</SelectItem>
-                            <SelectItem value="1">Premium (1-3% comisión)</SelectItem>
+                          <SelectContent>
+                            <SelectItem value={ProtectionType.Basic.toString()}>
+                              📦 Básica (SIN comisión - 0%)
+                            </SelectItem>
+                            <SelectItem value={ProtectionType.Premium.toString()}>
+                              💎 Premium (Con protección - 2.5-3% comisión)
+                            </SelectItem>
                           </SelectContent>
                         </Select>
+                        <p className="text-sm text-gray-400 mt-1">
+                          {projectForm.protection === ProtectionType.Basic
+                            ? '✅ Sin comisión de plataforma (0 PAS)'
+                            : '💎 Comisión: 3% (&lt;15k PAS) o 2.5% (≥15k PAS)'}
+                        </p>
+                      </div>
+
+                      <div className="p-4 bg-blue-500/10 border border-blue-500/20 rounded-lg">
+                        <p className="text-sm text-blue-400">
+                          ℹ️ <strong>Información Importante:</strong>
+                        </p>
+                        <ul className="text-xs text-blue-300 mt-2 ml-4 list-disc">
+                          <li><strong>Básica:</strong> Sin comisión (0%). El cliente asume todos los riesgos.</li>
+                          <li><strong>Premium:</strong> Con comisión 2.5-3%. Incluye mediación y protección de fondos.</li>
+                          <li><strong>Gas Reserve:</strong> Se agregan automáticamente 50 PAS para cubrir costos de transacción.</li>
+                        </ul>
                       </div>
 
                       <Button

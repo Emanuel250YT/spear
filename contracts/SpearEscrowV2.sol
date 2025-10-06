@@ -54,8 +54,9 @@ contract SpearEscrowV2 {
     mapping(address => bool) public admins; // Administradores autorizados
 
     uint256 public projectCounter;
-    uint256 public constant MIN_PROJECT_AMOUNT = 10 * 10 ** 6; // 10 USDT (asumiendo 6 decimales)
-    uint256 public constant PREMIUM_THRESHOLD = 15000 * 10 ** 6; // 15,000 USDT para protección premium
+    uint256 public constant MIN_PROJECT_AMOUNT = 10 * 10 ** 18; // 10 PAS (18 decimales)
+    uint256 public constant GAS_RESERVE = 50 * 10 ** 18; // 50 PAS para cubrir gas ✅
+    uint256 public constant PREMIUM_THRESHOLD = 15000 * 10 ** 18; // 15,000 PAS
     uint256 public constant MAX_DEVELOPER_PROJECTS = 5;
     uint256 public constant PROJECT_EXPIRATION_TIME = 7 days;
 
@@ -178,31 +179,20 @@ contract SpearEscrowV2 {
     function _calculatePlatformFee(
         uint256 _amount
     ) internal pure returns (uint256) {
-        // Fórmula de la calculadora:
-        // Base: 3%
-        // Premium (15k+): 3% - 0.5% = 2.5%
-        // Rango: 1% - 5%
+        // Fórmula simplificada:
+        // Premium (15k+ PAS): 2.5%
+        // Normal: 3%
 
         uint256 feePercentage;
 
-        if (_amount >= 15000 * 10 ** 6) {
-            // 15k+ USDT
-            // Proyectos premium: 2.5%
-            feePercentage = BASE_FEE_PERCENTAGE - PREMIUM_DISCOUNT; // 3% - 0.5% = 2.5%
+        if (_amount >= 15000 * 10 ** 18) {
+            // 15k+ PAS
+            feePercentage = BASE_FEE_PERCENTAGE - PREMIUM_DISCOUNT; // 2.5%
         } else {
-            // Proyectos normales: 3%
             feePercentage = BASE_FEE_PERCENTAGE; // 3%
         }
 
-        // Aplicar límites min/max
-        if (feePercentage > MAX_FEE_PERCENTAGE) {
-            feePercentage = MAX_FEE_PERCENTAGE; // 5% máximo
-        }
-        if (feePercentage < MIN_FEE_PERCENTAGE) {
-            feePercentage = MIN_FEE_PERCENTAGE; // 1% mínimo
-        }
-
-        return (_amount * feePercentage) / 10000; // Base 10000 para porcentajes
+        return (_amount * feePercentage) / 10000;
     }
 
     /**
@@ -210,11 +200,13 @@ contract SpearEscrowV2 {
      * @param _description Descripción del proyecto
      * @param _milestoneAmounts Array con los montos de cada milestone
      * @param _riskFund Monto del fondo de riesgo definido por el cliente
+     * @param _protection Tipo de protección (Basic = sin comisión, Premium = con comisión)
      */
     function createProject(
         string memory _description,
         uint256[] memory _milestoneAmounts,
-        uint256 _riskFund
+        uint256 _riskFund,
+        ProtectionType _protection
     ) external payable {
         require(
             _milestoneAmounts.length > 0,
@@ -238,19 +230,21 @@ contract SpearEscrowV2 {
 
         require(
             totalMilestones >= MIN_PROJECT_AMOUNT,
-            "Minimum 10 USDT required"
+            "Minimum 10 PAS required"
         );
 
-        // Calcular comisión usando la fórmula de la calculadora
-        uint256 platformFee = _calculatePlatformFee(totalMilestones);
-
-        // Determinar tipo de protección (automático basado en monto)
-        ProtectionType protection = ProtectionType.Basic;
-        if (totalMilestones >= PREMIUM_THRESHOLD) {
-            protection = ProtectionType.Premium;
+        // Calcular comisión SOLO si se elige protección Premium
+        uint256 platformFee = 0;
+        if (_protection == ProtectionType.Premium) {
+            platformFee = _calculatePlatformFee(totalMilestones);
         }
+        // Si es Basic, platformFee = 0 (sin comisión)
 
-        uint256 totalRequired = totalMilestones + _riskFund + platformFee;
+        // ✅ Agregar 50 PAS para cubrir costos de gas
+        uint256 totalRequired = totalMilestones +
+            _riskFund +
+            platformFee +
+            GAS_RESERVE;
         require(msg.value == totalRequired, "Incorrect payment amount");
 
         projectCounter++;
@@ -276,7 +270,7 @@ contract SpearEscrowV2 {
             milestoneCompleted: milestoneCompletedArray,
             milestoneApprovedByClient: milestoneApprovedByClientArray,
             milestoneApprovedByDeveloper: milestoneApprovedByDeveloperArray,
-            protection: protection,
+            protection: _protection, // Usar el tipo de protección elegido por el cliente
             status: ProjectStatus.Open,
             createdAt: block.timestamp,
             expiresAt: block.timestamp + PROJECT_EXPIRATION_TIME,

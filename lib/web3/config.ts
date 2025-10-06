@@ -1,7 +1,7 @@
 export const NETWORKS = {
   POLKADOT_HUB: {
-    chainId: '0x1911f0a6', // 420420422 en decimal
-    chainName: 'Polkadot Hub TestNet',
+    chainId: '0x190f1b46', // 420420422 en decimal
+    chainName: 'Polkadot Asset Hub TestNet',
     nativeCurrency: {
       name: 'PAS',
       symbol: 'PAS',
@@ -80,7 +80,7 @@ export interface CreateProjectParams {
   description: string;
   milestoneAmounts: string[]; // En PAS como strings
   riskFund: string; // En PAS como string
-  protection: ProtectionType;
+  protection: ProtectionType; // Basic = sin comisión, Premium = con comisión
 }
 
 // Eventos del contrato
