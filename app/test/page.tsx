@@ -332,99 +332,117 @@ export default function TestPage() {
 
               {/* Tab: Crear Proyecto */}
               <TabsContent value="create" className="mt-8">
-                <Card className="bg-white/5 border-white/10">
-                  <CardHeader>
-                    <CardTitle className="flex items-center gap-2 text-white">
-                      <FileText className="w-5 h-5" />
-                      Crear Nuevo Proyecto
-                    </CardTitle>
-                    <CardDescription className="text-gray-400">
-                      Crea un proyecto con milestones y fondo de riesgo opcional
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <form onSubmit={handleCreateProject} className="space-y-4">
-                      <div>
-                        <label className="block text-sm font-medium mb-2 text-gray-300">
-                          Descripción del Proyecto
-                        </label>
-                        <Textarea
-                          value={projectForm.description}
-                          onChange={(e) => setProjectForm({ ...projectForm, description: e.target.value })}
-                          placeholder="Describe tu proyecto..."
-                          required
-                          className="bg-white/5 border-white/10 text-white"
-                        />
-                      </div>
+                {/* Aviso sobre funcionalidad de escrow */}
+                <Alert className="mb-6 border-blue-200/20 bg-blue-200/10">
+                  <AlertCircle className="h-4 w-4 text-blue-200" />
+                  <AlertDescription className="text-blue-200">
+                    <strong>Escrow Simple:</strong> Usa el contrato Storage desplegado como sistema de escrow. Almacena datos del proyecto y envía fondos para crear un escrow funcional.
+                  </AlertDescription>
+                </Alert>
+                
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                  <Card className="bg-white/5 border-white/10">
+                    <CardHeader>
+                      <CardTitle className="flex items-center gap-2 text-white">
+                        <FileText className="w-5 h-5" />
+                        Crear Escrow Simple
+                      </CardTitle>
+                      <CardDescription className="text-gray-400">
+                        Usa el contrato Storage como sistema de escrow
+                      </CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                      <form onSubmit={handleCreateProject} className="space-y-4">
+                        <div>
+                          <label className="block text-sm font-medium mb-2 text-gray-300">
+                            ID del Proyecto (número)
+                          </label>
+                          <Input
+                            type="number"
+                            value={projectForm.description}
+                            onChange={(e) => setProjectForm({ ...projectForm, description: e.target.value })}
+                            placeholder="123"
+                            required
+                            className="bg-white/5 border-white/10 text-white"
+                          />
+                          <p className="text-sm text-gray-400 mt-1">
+                            Se almacenará en el contrato Storage
+                          </p>
+                        </div>
 
-                      <div>
-                        <label className="block text-sm font-medium mb-2 text-gray-300">
-                          Milestones (PAS, separados por comas)
-                        </label>
-                        <Input
-                          value={projectForm.milestones}
-                          onChange={(e) => setProjectForm({ ...projectForm, milestones: e.target.value })}
-                          placeholder="0.1,0.2,0.3"
-                          required
-                          className="bg-white/5 border-white/10 text-white"
-                        />
-                        <p className="text-sm text-gray-400 mt-1">
-                          Ejemplo: 0.1,0.2,0.3 para tres milestones
-                        </p>
-                      </div>
+                        <div>
+                          <label className="block text-sm font-medium mb-2 text-gray-300">
+                            Monto del Escrow (PAS)
+                          </label>
+                          <Input
+                            type="number"
+                            step="0.001"
+                            value={projectForm.riskFund}
+                            onChange={(e) => setProjectForm({ ...projectForm, riskFund: e.target.value })}
+                            placeholder="0.1"
+                            required
+                            className="bg-white/5 border-white/10 text-white"
+                          />
+                          <p className="text-sm text-gray-400 mt-1">
+                            Fondos que se enviarán al contrato
+                          </p>
+                        </div>
 
-                      <div>
-                        <label className="block text-sm font-medium mb-2 text-gray-300">
-                          Fondo de Riesgo (PAS)
-                        </label>
-                        <Input
-                          type="number"
-                          step="0.001"
-                          value={projectForm.riskFund}
-                          onChange={(e) => setProjectForm({ ...projectForm, riskFund: e.target.value })}
-                          placeholder="0.0"
-                          className="bg-white/5 border-white/10 text-white"
-                        />
-                      </div>
-
-                      <div>
-                        <label className="block text-sm font-medium mb-2 text-gray-300">
-                          Tipo de Protección
-                        </label>
-                        <Select
-                          value={projectForm.protection.toString()}
-                          onValueChange={(value) => setProjectForm({ ...projectForm, protection: Number(value) as ProtectionType })}
+                        <Button
+                          type="submit"
+                          disabled={isLoading}
+                          className="w-full bg-blue-200 hover:bg-blue-300 text-black"
                         >
-                          <SelectTrigger className="bg-white/5 border-white/10 text-white">
-                            <SelectValue />
-                          </SelectTrigger>
-                          <SelectContent className="bg-gray-900 border-white/10">
-                            <SelectItem value="0">Básica (0% comisión)</SelectItem>
-                            <SelectItem value="1">Premium (1-3% comisión)</SelectItem>
-                          </SelectContent>
-                        </Select>
-                      </div>
+                          {isLoading ? (
+                            <>
+                              <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                              Creando Escrow...
+                            </>
+                          ) : (
+                            <>
+                              <Zap className="w-4 h-4 mr-2" />
+                              Crear Escrow
+                            </>
+                          )}
+                        </Button>
+                      </form>
+                    </CardContent>
+                  </Card>
 
+                  <Card className="bg-white/5 border-white/10">
+                    <CardHeader>
+                      <CardTitle className="flex items-center gap-2 text-white">
+                        <CheckCircle className="w-5 h-5" />
+                        Completar Escrow
+                      </CardTitle>
+                      <CardDescription className="text-gray-400">
+                        Marcar el escrow como completado (código 999)
+                      </CardDescription>
+                    </CardHeader>
+                    <CardContent>
                       <Button
-                        type="submit"
+                        onClick={async () => {
+                          try {
+                            await createProject({
+                              description: '999',
+                              milestoneAmounts: ['0'],
+                              riskFund: '0',
+                              protection: ProtectionType.Basic
+                            })
+                            alert('✅ Escrow marcado como completado!')
+                          } catch (error) {
+                            console.error('Error:', error)
+                          }
+                        }}
                         disabled={isLoading}
-                        className="w-full bg-blue-200 hover:bg-blue-300 text-black"
+                        className="w-full bg-green-200 hover:bg-green-300 text-black"
                       >
-                        {isLoading ? (
-                          <>
-                            <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                            Creando...
-                          </>
-                        ) : (
-                          <>
-                            <Zap className="w-4 h-4 mr-2" />
-                            Crear Proyecto
-                          </>
-                        )}
+                        <CheckCircle className="w-4 h-4 mr-2" />
+                        Completar Escrow (999)
                       </Button>
-                    </form>
-                  </CardContent>
-                </Card>
+                    </CardContent>
+                  </Card>
+                </div>
               </TabsContent>
 
               {/* Tab: Gestionar Proyecto */}
@@ -506,6 +524,50 @@ export default function TestPage() {
                   </Card>
                 </div>
 
+                {/* Card destacada para ver contrato */}
+                <Card className="mt-8 bg-gradient-to-br from-blue-500/20 via-purple-500/20 to-pink-500/20 border-2 border-blue-400/50 shadow-2xl">
+                  <CardHeader className="text-center pb-4">
+                    <div className="flex justify-center mb-4">
+                      <div className="p-4 bg-blue-500/30 rounded-full">
+                        <Shield className="w-12 h-12 text-blue-200" />
+                      </div>
+                    </div>
+                    <CardTitle className="text-2xl font-bold text-white mb-2">Contrato Inteligente Desplegado</CardTitle>
+                    <CardDescription className="text-gray-300">Verificado en Polkadot Hub TestNet</CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="space-y-6">
+                      <div className="bg-black/30 p-4 rounded-lg border border-blue-400/30">
+                        <p className="text-sm text-gray-400 mb-2 text-center">Dirección del Contrato</p>
+                        <p className="text-blue-200 font-mono text-center text-lg font-bold break-all">
+                          0xd3D22146602588336B203B2232303Eb813d8befb
+                        </p>
+                      </div>
+                      
+                      <div className="grid grid-cols-1 gap-3">
+                        <Button
+                          onClick={() => window.open('https://blockscout-passet-hub.parity-testnet.parity.io/address/0xd3D22146602588336B203B2232303Eb813d8befb', '_blank')}
+                          className="w-full h-14 bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white font-bold text-lg shadow-lg hover:shadow-xl transition-all"
+                        >
+                          <Network className="w-6 h-6 mr-3" />
+                          Abrir en Block Explorer
+                        </Button>
+                        
+                        <Button
+                          onClick={() => {
+                            navigator.clipboard.writeText('0xd3D22146602588336B203B2232303Eb813d8befb')
+                            alert('✅ Dirección copiada al portapapeles')
+                          }}
+                          variant="outline"
+                          className="w-full h-12 border-2 border-blue-400/50 text-blue-200 hover:bg-blue-500/20 font-semibold"
+                        >
+                          📋 Copiar Dirección
+                        </Button>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+                
                 {/* Detalles del proyecto */}
                 {projectDetails && (
                   <Card className="mt-8 bg-white/5 border-white/10">
@@ -772,7 +834,7 @@ export default function TestPage() {
                       <div>
                         <p className="text-sm text-gray-400">Dirección del Contrato</p>
                         <p className="text-sm font-mono text-blue-200 break-all">
-                          0xf90f46345E09Bd8C6c265EdEbFa30269891EC259
+                          0xd3D22146602588336B203B2232303Eb813d8befb
                         </p>
                       </div>
                       <div>
@@ -781,7 +843,7 @@ export default function TestPage() {
                       </div>
                       <div>
                         <p className="text-sm text-gray-400">Versión</p>
-                        <p className="text-blue-200">SpearEscrowV2</p>
+                        <p className="text-blue-200">Storage (Escrow)</p>
                       </div>
                     </CardContent>
                   </Card>
@@ -833,7 +895,7 @@ export default function TestPage() {
                         Recargar Datos
                       </Button>
                       <Button
-                        onClick={() => window.open('https://blockscout-passet-hub.parity-testnet.parity.io/address/0xf90f46345E09Bd8C6c265EdEbFa30269891EC259', '_blank')}
+                        onClick={() => window.open('https://blockscout-passet-hub.parity-testnet.parity.io/address/0xd3D22146602588336B203B2232303Eb813d8befb', '_blank')}
                         variant="outline"
                         className="border-blue-200/50 text-blue-200 hover:bg-blue-200/10"
                       >
